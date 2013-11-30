@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+  <siteMapNode title="Root"  description="Root" resourceKey="">
+    <siteMapNode url="~/admin/AdminHomePage.aspx" title="Home Page"  description="Home page articles" />
+    <siteMapNode url="~/admin/AdminSiteContent.aspx" title="Articles"  description="Site content" />
+    <siteMapNode title="Links"  description="Links administration">
+      <siteMapNode url="~/admin/AdminLinkCategories.aspx" title="Link Categories" description="Admin link categories" />
+      <siteMapNode url="~/admin/AdminLinks.aspx" title="Link Items" description="Admin link items" />
+    </siteMapNode>
+    <siteMapNode title="Users" description="User administration">
+      <siteMapNode url="~/admin/PendingUsers.aspx" title="Pending" description="Pending users" />
+      <siteMapNode url="~/admin/ManageUsers.aspx" title="Manage" description="Manage users" />
+    </siteMapNode>
+    <siteMapNode url="~/Default.aspx" title="Exit" description="Exit admin section" />
+  </siteMapNode>
+</siteMap>

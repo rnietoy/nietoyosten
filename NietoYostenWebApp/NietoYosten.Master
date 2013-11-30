@@ -1,0 +1,70 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="NietoYosten.master.cs" Inherits="NietoYostenWebApp.NietoYosten" %>
+
+<!DOCTYPE html >
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#" >
+<head runat="server">
+    <title></title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="css/960.css" />
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+<form id="form1" runat="server">
+<div class="container_12">
+    <div class="grid_12 logo">
+        <div class="grid_8 alpha">
+            <asp:Image ID="imgNietoYostenHeader" runat="server" ImageUrl="~/Images/nylogomas.png"/>
+        </div>
+        <div class="grid_4 omega login">
+            <asp:LoginView ID="loginView" runat="server" >
+                <AnonymousTemplate>
+                    <asp:LoginStatus ID="LoginStatus1"  runat="server" />
+                </AnonymousTemplate>
+                <LoggedInTemplate>
+                    Welcome <asp:LoginName ID="LoginName1" runat="server" /> ! <br />
+                    <a id="A1" href="~/ChangePassword.aspx" runat="server">Change password</a> |
+                    <asp:LoginStatus ID="LoginStatus1"  runat="server" LogoutAction="Redirect" LogoutPageUrl="~/Default.aspx" />
+                </LoggedInTemplate>
+            </asp:LoginView>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div class="grid_12 menubar">
+        <div class="grid_9 alpha">
+            <asp:Menu ID="Menu1" runat="server" DataSourceID="SiteMapDataSource1" 
+                Orientation="Horizontal" RenderingMode="Table" 
+                DynamicMenuItemStyle-ForeColor="#EAEAEA" 
+                DynamicMenuItemStyle-BackColor="#322424" DynamicMenuStyle-ForeColor="#EAEAEA" 
+                ForeColor="#EAEAEA" DynamicMenuItemStyle-HorizontalPadding="5" 
+                DynamicMenuStyle-HorizontalPadding="0" DynamicMenuItemStyle-VerticalPadding="1" 
+                DynamicHoverStyle-ForeColor="#A9AACF" DynamicSelectedStyle-ItemSpacing="5" 
+                DynamicSelectedStyle-HorizontalPadding="5" StaticSelectedStyle-ItemSpacing="5" 
+                StaticSelectedStyle-HorizontalPadding="5" 
+                DynamicSelectedStyle-ForeColor="#A9AACF" StaticHoverStyle-ForeColor="#A9AACF" 
+                CssClass="menubar" BorderStyle="None" DynamicEnableDefaultPopOutImage="False" 
+                DynamicMenuItemStyle-BorderStyle="None" DynamicMenuItemStyle-BorderWidth="1px" 
+                DynamicMenuStyle-BorderStyle="Solid" DynamicMenuStyle-BorderWidth="1px" 
+                onmenuitemdatabound="Menu1_MenuItemDataBound">
+            </asp:Menu>
+        </div>
+        <div class="grid_3 omega">
+            <asp:LoginView ID="loginViewSearch" runat="server" >
+                <LoggedInTemplate>
+                    Search:&nbsp;<asp:TextBox ID="txtSearch" runat="server" Width="110px"></asp:TextBox>
+                    <asp:Button ID="btnSearch" runat="server" Text="Go" onclick="btnSearch_Click" />
+                </LoggedInTemplate>
+            </asp:LoginView>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <asp:SiteMapDataSource ID="SiteMapDataSource1" runat="server" ShowStartingNode="False" SiteMapProvider="User" />
+    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            
+    </asp:ContentPlaceHolder>
+</div>
+</form>
+</body>
+</html>

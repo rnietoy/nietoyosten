@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+  <siteMapNode title="Home"  description="Home" roles="*" >
+    <siteMapNode url="~/Default.aspx" title="Home" description="Home" roles="*" />
+    <siteMapNode url="~/Content/News" title="News"  description="Family News"/>
+    <siteMapNode title="Member sections" description="Member sections" roles="family,friend">
+      <siteMapNode url="~/Members.aspx" title="Family Members" description="Family Members" />
+      <siteMapNode url="~/Content/Papi" title="Papi" description="Papi" />
+      <siteMapNode url="~/Content/Mami" title="Mami" description="Mami" />
+      <siteMapNode url="~/Content/Rafa" title="Rafa" description="Rafa" />
+      <siteMapNode url="~/Content/Helen" title="Helen" description="Helen" />
+      <siteMapNode url="~/Content/Ani" title="Ani" description="Ani" />
+    </siteMapNode>
+    <siteMapNode title="Content" description="Content" roles="family, friend">
+      <siteMapNode url="~/Content/Reflexiones" title="Reflexiones" description="Reflexiones"/>
+      <siteMapNode url="~/Content/Citas" title="Citas" description="Citas" />
+      <siteMapNode url="~/Content/Chistes" title="Chistes" description="Chistes" />
+    </siteMapNode>
+    <siteMapNode url="~/LinksCategories.aspx" title="Links" description="Links" />
+    <siteMapNode url="http://public.fotki.com/nietoyosten" title="Fotki" description="Fotki Family Pictures" target="_blank" roles="*" />
+    <siteMapNode url="~/Pictures.aspx" title="Pictures" description="Family Pictures" roles="family,friend" />
+    <siteMapNode url="~/Admin/AdminSiteContent.aspx" title="Admin" description="Site Administration" roles="family" />
+  </siteMapNode>
+</siteMap>

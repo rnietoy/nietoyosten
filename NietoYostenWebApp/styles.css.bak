@@ -1,0 +1,139 @@
+﻿body 
+{
+    font-size: medium;
+    font-family: Arial, Helvetica, Verdana, Sans-Serif;
+    line-height: 150%;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+}
+
+html
+{
+    padding: 0;
+}
+
+hr
+{
+    border: 1px solid;
+}
+
+#page
+{
+    width: 760px;
+    background-color: Red;
+    margin: auto;
+}
+
+#adminpage
+{
+    margin-left: 50px; margin-right: 50px; margin-bottom: 50px;
+}
+
+.logo
+{
+    background-color: #1a1010;
+}
+
+.login
+{
+    background-color: #1a1010;
+    font-family: "Trebuchet MS";
+    font-size: small;
+    color: #ffffff;
+    padding-top: 40px;
+    text-align: center;
+    height: 67px;
+}
+
+.login a:visited
+{
+    color: #cfcfcf;
+}
+
+.login a:link
+{
+    color: #cfcfcf;
+}
+
+.menubar
+{
+    background-color: #433232;
+    padding-top: 3px;
+    color: #EAEAEA;
+}
+
+#menubarbox
+{
+    background-color: #433232;
+    float: left;
+    position: relative;
+    width: 530px;
+    height: 30px;
+}
+
+.searchbox
+{
+    text-align: right;
+}
+
+.midcol
+{
+    clear: left;
+    float: left;
+    position: relative;
+    padding-top: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-bottom: 50px;
+    width: 740px;
+}
+
+.latestNews
+{
+    border-width: 1px;
+    border-style: solid;
+    border-color: #727272;
+    float: right;
+    width: 300px;
+    margin: 20px 0px 20px 20px;
+    padding: 10px 10px 10px 15px;
+}
+
+.pagelinks
+{
+    text-align: center;
+    word-spacing: 5px;
+}
+
+.pagelinks a:link
+{
+    text-decoration: none;
+    color: Blue;
+}
+
+.pagelinks strong
+{
+    color: Black;
+}
+
+.pagelinks a:hover
+{
+    text-decoration: underline;
+    color: Blue;
+}
+
+.pagelinks a:visited
+{
+    color: Blue;
+}
+
+.articledate
+{
+    text-align: right;
+    font-size: smaller;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    line-height: 1.5em;
+    font-family: "Trebuchet MS";
+}
