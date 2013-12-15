@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImportNietoData", "ImportNi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateLuceneIndex", "CreateLuceneIndex\CreateLuceneIndex.csproj", "{59EFBD01-7628-4A9A-ABD9-A5FA24D75A39}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NietoYostenMvc", "NietoYostenMvc\NietoYostenMvc.csproj", "{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,16 @@ Global
 		{59EFBD01-7628-4A9A-ABD9-A5FA24D75A39}.Release|Mixed Platforms.Build.0 = Release|x86
 		{59EFBD01-7628-4A9A-ABD9-A5FA24D75A39}.Release|x86.ActiveCfg = Release|x86
 		{59EFBD01-7628-4A9A-ABD9-A5FA24D75A39}.Release|x86.Build.0 = Release|x86
+		{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
