@@ -6,7 +6,7 @@
 CREATE TABLE [dbo].[Users] (
     [ID]             INT            IDENTITY (1, 1) NOT NULL,
     [Email]          NVARCHAR (255) NOT NULL,
-    [HashedPassword] NVARCHAR (255) NOT NULL,
+    [HashedPassword] NVARCHAR (255) NULL,
     [LastLogin]      DATETIME       NULL,
     [CreatedAt]      DATETIME       DEFAULT (getdate()) NOT NULL,
     [UpdatedAt]      DATETIME       DEFAULT (getdate()) NOT NULL,
@@ -21,27 +21,37 @@ CREATE TABLE [dbo].[Users] (
 CREATE TABLE [dbo].[Sections] (
 	[ID]                int          IDENTITY(1,1) NOT NULL,
 	[Name]              nvarchar(64) NOT NULL,
-	[ParentSectionId]   int          NULL,
+	[ParentSectionID]   int          NULL,
     CONSTRAINT [PK_Sections] PRIMARY KEY CLUSTERED ([ID] ASC),
-    CONSTRAINT [FK_Sections_Sections] FOREIGN KEY ([ParentSectionId]) REFERENCES [dbo].[Sections] ([ID])
+    CONSTRAINT [FK_Sections_Sections] FOREIGN KEY ([ParentSectionID]) REFERENCES [dbo].[Sections] ([ID])
 );
 
 ----------------------------------------- Articles ---------------------------------------
 CREATE TABLE [dbo].[Articles] (
-	[ID]    		    int 				IDENTITY(1,1) NOT NULL,
-	[Title] 			nvarchar(100)		NOT NULL,
-	[IntroText] 		nvarchar(max)       NULL,
-	[Content] 			nvarchar(max)       NULL,
-	[SectionID] 		int 			    NOT NULL,
-	[CreatedBy] 		int					NOT NULL,
-	[ModifiedBy] 		int					NOT NULL,
-	[CreatedAt] 		DATETIME 			DEFAULT (getdate()) NOT NULL,
-	[UpdatedAt] 		datetime            DEFAULT (getdate()) NOT NULL,
-	[Published] 		bit 				DEFAULT (0) NOT NULL,
+	[ID]    		    int 				    IDENTITY(1,1) NOT NULL,
+	[Title] 			  nvarchar(100)		NOT NULL,
+	[IntroText] 		nvarchar(max)   NULL,
+	[Content] 			nvarchar(max)   NULL,
+	[SectionID] 		int 			      NOT NULL,
+	[CreatedBy] 		int					    NOT NULL,
+	[ModifiedBy] 		int					    NOT NULL,
+	[CreatedAt] 		DATETIME 			  DEFAULT (getdate()) NOT NULL,
+	[UpdatedAt] 		datetime        DEFAULT (getdate()) NOT NULL,
+	[Published] 		bit 				    DEFAULT (0) NOT NULL,
     CONSTRAINT [PK_Articles] PRIMARY KEY CLUSTERED ([ID] ASC),
     CONSTRAINT [FK_Articles_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [dbo].[Users] ([ID]),
     CONSTRAINT [FK_Articles_Users_ModifiedBy] FOREIGN KEY ([ModifiedBy]) REFERENCES [dbo].[Users] ([ID]),
     CONSTRAINT [FK_Articles_Sections] FOREIGN KEY ([SectionID]) REFERENCES [dbo].[Sections] ([ID])
+);
+
+----------------------------------------- HomePageArticles ---------------------------------------
+CREATE TABLE [dbo].[HomePageArticles] (
+  [ID]            int         IDENTITY(1,1) NOT NULL,
+  [Position]      INT         NOT NULL,
+  [Enabled]       BIT         DEFAULT(0) NOT NULL,
+  [ArticleID]     INT         NOT NULL,
+  CONSTRAINT [PK_HomePageArticles] PRIMARY KEY CLUSTERED ([ID] ASC),
+  CONSTRAINT [FK_HomePageArticles_Articles] FOREIGN KEY ([ArticleID]) REFERENCES [dbo].[Articles] ([ID])
 );
 
 ----------------------------------------- WeblinkCategories ---------------------------------------
