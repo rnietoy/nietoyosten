@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-5">
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <h2>Member Log In</h2>
+            @Html.ValidationSummary(true)
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" name="email">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="password">
+            </div>
+            <button type="submit" class="btn btn-default">Log In</button>
+        }
+    </div>
+</div>
+<br>
+<!-- Facebook Login: replace with helper/partial to generate facebook login button -->
+<p>Log In with Facebook</p>
+<br>
+<p>Olvidaste tu password? Da click <a href="#">aquí</a>.</p>
+<p>No tienes una cuenta aún? Da click <a href="#">aquí</a> para crear tu cuenta.</p>
