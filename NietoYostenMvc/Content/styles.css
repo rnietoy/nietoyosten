@@ -1,0 +1,36 @@
+.logobar
+{
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    margin-left: 0px;
+    margin-right: 0px;
+    background-color: #1a1010;
+    color: #ffffff;
+}
+
+.navbar-default
+{
+    background-color: #433232;
+    background-image: none;
+    color: #EAEAEA;
+    border: 0px;
+    border-radius: 0px;
+}
+
+.navbar-collapse
+{
+    background-color: #433232;
+    color: #EAEAEA;
+}
+
+.navbar-default .navbar-nav > li > a
+{
+    color: #EAEAEA;
+}
+
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+    background-color: rgba(0, 0, 0, 0);
+    color: #9999FF;
+}
