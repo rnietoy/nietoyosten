@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using NietoYostenMvc.Controllers
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -18,9 +19,8 @@
             <div class="col-md-9">
                 <img src="~/images/nylogomas.png" />
             </div>
-            <div class="col-md-3">
-                <!-- Login info: replace with helper/partial to generate code based on current logged in user -->
-                Login info here.
+            <div class="col-md-3 login-corner">
+                @Home.LoginInfo(ViewContext.Controller as ApplicationController)
             </div>
         </div>
         <!-- Menu and search bar -->

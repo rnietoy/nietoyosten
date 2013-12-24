@@ -10,6 +10,22 @@
     color: #ffffff;
 }
 
+.login-corner
+{
+    background-color: #1a1010;
+    text-align: center;    
+}
+
+.login-corner a:link
+{
+    color: #cfcfcf;
+}
+
+.login-corner a:visited
+{
+    color: #cfcfcf;    
+}
+
 .navbar-default
 {
     background-color: #433232;

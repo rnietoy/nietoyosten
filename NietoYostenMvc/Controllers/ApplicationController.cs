@@ -30,6 +30,5 @@ namespace NietoYostenMvc.Controllers
                 return CurrentUser != null;
             }
         }
-
     }
 }

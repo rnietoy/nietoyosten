@@ -1,0 +1,19 @@
+﻿@using System.Web.Mvc
+@using System.Web.Mvc.Html;
+@using NietoYostenMvc.Controllers
+
+@helper LoginInfo(ApplicationController appController)
+{
+    if (null != appController.CurrentUser)
+    {
+        <br/>
+        <p>Welcome @appController.CurrentUser !</p>
+        <p><a href="~/account/logout">Logout</a></p>
+    }
+    else
+    {
+        <br/><br/>
+        <a href="~/account/login">Login</a>
+    }
+
+}

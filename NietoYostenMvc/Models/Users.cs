@@ -32,5 +32,10 @@ namespace NietoYostenMvc.Models
             }
             return result;
         }
+
+        public void SetPassword(int UserID, string password)
+        {
+            this.Update(new {HashedPassword = Crypto.HashPassword(password)}, UserID);
+        }
     }
 }
