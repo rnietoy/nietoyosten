@@ -3,4 +3,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<div class="family-pic">
+    <p><img src="~/Images/HomepNY.jpg" width="740px" alt="Nieto Yosten Family Picture" /></p>
+</div>
+
+@{
+    foreach (var article in @Model)
+    {
+        @Home.ArticleIntro(article)
+    }
+}

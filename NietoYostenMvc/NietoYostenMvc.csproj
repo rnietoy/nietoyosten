@@ -115,6 +115,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Articles.cs" />
     <Compile Include="Models\Users.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -124,6 +125,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="Content\styles.css" />
     <Content Include="Global.asax" />
+    <Content Include="images\HomepNY.jpg" />
     <Content Include="images\nylogomas.png" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -155,6 +157,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Code\Home.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\ShowArticle.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

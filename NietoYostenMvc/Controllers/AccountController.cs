@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -15,6 +16,7 @@ namespace NietoYostenMvc.Controllers
     public class AccountController : ApplicationController
     {
         private Users _users;
+        private string _returnUrl = null;
 
         public AccountController()
         {
@@ -23,7 +25,18 @@ namespace NietoYostenMvc.Controllers
 
         public ActionResult Login()
         {
+            ViewBag.ReturnUrl = HttpContext.Request.QueryString.Get("ReturnUrl");
             return View();
+        }
+
+        private ActionResult GetLoginRedirectAction()
+        {
+            string returnUrl = (HttpContext.Request).QueryString.Get("ReturnUrl");
+            if (null != returnUrl)
+            {
+                return Redirect(string.Format("~/{0}", returnUrl));
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
@@ -36,14 +49,14 @@ namespace NietoYostenMvc.Controllers
             if (null != user && null != user.HashedPassword && Crypto.VerifyHashedPassword(user.HashedPassword, password))
             {
                 FormsAuthentication.SetAuthCookie(email, false);
-                return RedirectToAction("Index", "Home");
+                return GetLoginRedirectAction();
             }
 
             // Check credentials against old aspnet membership password
             if (AspNetMembershipLogin(user, password))
             {
                 FormsAuthentication.SetAuthCookie(email, false);
-                return RedirectToAction("Index", "Home");
+                return GetLoginRedirectAction();
             }
 
             return View();

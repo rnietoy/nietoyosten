@@ -15,5 +15,29 @@
         <br/><br/>
         <a href="~/account/login">Login</a>
     }
+}
 
+@helper ArticleIntro(dynamic article)
+{
+    <div class="article-date">
+            @string.Format("{0:D}", article.CreatedAt) <br/>
+            Written by @article.Email
+    </div>
+    <h2>@article.Title</h2>
+    @(new HtmlString(article.IntroText))
+    if (!string.IsNullOrEmpty(@article.Content))
+    {
+        <p><a href="#">Read more...</a></p>    
+    }
+}
+
+@helper ArticleFull(dynamic article)
+{
+    <div class="article-date">
+            @string.Format("{0:D}", article.CreatedAt) <br/>
+            Written by @article.Email
+    </div>
+    <h2>@article.Title</h2>
+    @(new HtmlString(article.IntroText))
+    @(new HtmlString(article.Content))
 }

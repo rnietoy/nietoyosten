@@ -37,7 +37,7 @@ SET IDENTITY_INSERT [Sections] OFF
 --------------------------------------------------------------------------------------------
 -- Articles
 SET IDENTITY_INSERT Articles ON
-INSERT INTO Articles (ID, Title, IntroText, Content, SectionID, CreatedBy, ModifiedBy, CreatedAt, UpdatedAt, Published)
+INSERT INTO Articles (ID, Title, IntroText, Content, SectionID, CreatedBy, ModifiedBy, CreatedAt, UpdatedAt, IsPublished)
 SELECT
   A.ArticleId,
   A.Title, 
@@ -51,7 +51,7 @@ SELECT
 	),
   CreatedAt = A.DateCreated,
   UpdatedAt = COALESCE (A.DateModified, A.DateCreated),
-  Published = A.Published
+  IsPublished = A.Published
 FROM [nietoyosten_old].[dbo].[Article] A
 SET IDENTITY_INSERT Articles OFF
 

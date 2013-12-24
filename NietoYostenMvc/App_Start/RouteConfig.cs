@@ -14,6 +14,18 @@ namespace NietoYostenMvc
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                null,
+                url: "news",
+                defaults: new { controller = "Home", action = "ShowSection", section = "news" }
+            );
+
+            routes.MapRoute(
+                null,
+                url: "sections/{section}",
+                defaults: new { controller = "Home", action = "ShowSection", section = "citas" }
+            );
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
