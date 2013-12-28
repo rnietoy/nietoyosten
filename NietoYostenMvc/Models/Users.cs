@@ -37,5 +37,17 @@ namespace NietoYostenMvc.Models
         {
             this.Update(new {HashedPassword = Crypto.HashPassword(password)}, UserID);
         }
+
+        public string[] GetUserRoles(string email)
+        {
+            dynamic user = this.Single(where: "Email = @0", args:email);
+            return user.Roles.Split(',');
+        }
+
+        public bool IsUserInRole(string email, string role)
+        {
+            var roles = GetUserRoles(email);
+            return roles.Contains(role);
+        }
     }
 }

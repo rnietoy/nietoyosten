@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using NietoYostenMvc.Models;
 
 namespace NietoYostenMvc.Controllers
 {
@@ -29,6 +30,14 @@ namespace NietoYostenMvc.Controllers
             {
                 return CurrentUser != null;
             }
+        }
+
+        public bool IsCurrentUserInRole(string role)
+        {
+            if (!IsLoggedIn) return false;
+
+            var db = new Users();
+            return db.IsUserInRole(CurrentUser, role);
         }
     }
 }
