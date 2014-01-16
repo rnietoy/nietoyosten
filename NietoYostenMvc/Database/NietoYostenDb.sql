@@ -10,8 +10,8 @@ CREATE TABLE [dbo].[Users] (
     [LastLogin]      DATETIME       NULL,
     [CreatedAt]      DATETIME       DEFAULT (getdate()) NOT NULL,
     [UpdatedAt]      DATETIME       DEFAULT (getdate()) NOT NULL,
-    [IsApproved]     BIT            NOT NULL,
-    [Roles]          NVARCHAR (255) NULL,  -- Comma separated list of role names that this user belongs to.
+    [IsApproved]     BIT            DEFAULT (0) NOT NULL,
+    [Role]           NVARCHAR (16)  DEFAULT ('friend') NOT NULL,
     [FacebookUserID] INT            NULL,
     CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ([ID] ASC),
     CONSTRAINT [UQ_Users_Email] UNIQUE NONCLUSTERED ([Email] ASC)

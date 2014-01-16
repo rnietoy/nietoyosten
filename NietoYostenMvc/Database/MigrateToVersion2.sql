@@ -15,15 +15,23 @@ SELECT
   M.CreateDate as CreatedAt,
   M.LastPasswordChangedDate as UpdatedAt,
   M.IsApproved as IsApproved,
-  Roles = (SELECT LEFT(Roles, LEN(Roles) - 1)
-	FROM (
-		select R.RoleName + ','
-		from [nietoyosten_old].[dbo].[aspnet_Roles] R
-		inner join [nietoyosten_old].[dbo].[aspnet_UsersInRoles] UR on UR.RoleId = R.RoleId
-		inner join [nietoyosten_old].[dbo].[aspnet_Users] U on U.UserId = UR.UserId
-		where U.UserId = M.UserId
-		FOR XML PATH ('')
-	) r (Roles)),
+  Roles = CASE
+    WHEN 'admin' IN
+      (select R.RoleName 
+      from [nietoyosten_old].[dbo].[aspnet_Roles] R
+      inner join [nietoyosten_old].[dbo].[aspnet_UsersInRoles] UR on UR.RoleId = R.RoleId
+      inner join [nietoyosten_old].[dbo].[aspnet_Users] U on U.UserId = UR.UserId
+      where U.UserId = M.UserId)
+    THEN 'admin'
+    WHEN 'family' IN
+      (select R.RoleName 
+      from [nietoyosten_old].[dbo].[aspnet_Roles] R
+      inner join [nietoyosten_old].[dbo].[aspnet_UsersInRoles] UR on UR.RoleId = R.RoleId
+      inner join [nietoyosten_old].[dbo].[aspnet_Users] U on U.UserId = UR.UserId
+      where U.UserId = M.UserId)
+    THEN 'family'
+    ELSE 'friend'
+  END,
   FacebookUserID = (SELECT FbUid FROM [nietoyosten_old].[dbo].[FacebookUserIds] WHERE UserId = M.UserId)
 FROM [nietoyosten_old].[dbo].[aspnet_Membership] M
 

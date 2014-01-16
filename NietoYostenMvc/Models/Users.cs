@@ -17,19 +17,36 @@ namespace NietoYostenMvc.Models
         {
             dynamic result = new ExpandoObject();
             result.Success = false;
-            if (email.Length >= 6 && password.Length >= 6 && password.Equals(confirm))
+
+            if (email.Length < 6)
             {
-                try
-                {
-                    result.UserID = this.Insert(new { Email = email, HashedPassword = Crypto.HashPassword(password) });
-                    result.Success = true;
-                    result.Message = "Thanks for signing up!";
-                }
-                catch (SqlException ex)
-                {
-                    result.Message = "This email already exists in our system";
-                }
+                result.Message = "Email should be longer than 6 characters.";
+                return result;
             }
+
+            if (password.Length < 6)
+            {
+                result.Message = "Password should be longer than 6 characters.";
+                return result;
+            }
+
+            if (!password.Equals(confirm))
+            {
+                result.Message = "Passwords do not match.";
+                return result;
+            }
+
+            try
+            {
+                result.UserID = this.Insert(new { Email = email, HashedPassword = Crypto.HashPassword(password) });
+                result.Success = true;
+                result.Message = "Thanks for signing up!";
+            }
+            catch (SqlException ex)
+            {
+                result.Message = "This email already exists in our system.";
+            }
+
             return result;
         }
 
@@ -38,16 +55,15 @@ namespace NietoYostenMvc.Models
             this.Update(new {HashedPassword = Crypto.HashPassword(password)}, UserID);
         }
 
-        public string[] GetUserRoles(string email)
+        public string GetUserRole(string email)
         {
-            dynamic user = this.Single(where: "Email = @0", args:email);
-            return user.Roles.Split(',');
+            dynamic user = this.Single(where: "Email = @0", args: email);
+            return user.Role;
         }
 
         public bool IsUserInRole(string email, string role)
         {
-            var roles = GetUserRoles(email);
-            return roles.Contains(role);
+            return role.Equals(GetUserRole(email));
         }
     }
 }

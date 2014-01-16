@@ -29,7 +29,7 @@ namespace NietoYostenMvc.Controllers
             return View();
         }
 
-        private ActionResult GetLoginRedirectAction()
+        private ActionResult LoginAndRedirectToReturnUrl()
         {
             string returnUrl = (HttpContext.Request).QueryString.Get("ReturnUrl");
             if (null != returnUrl)
@@ -49,14 +49,14 @@ namespace NietoYostenMvc.Controllers
             if (null != user && null != user.HashedPassword && Crypto.VerifyHashedPassword(user.HashedPassword, password))
             {
                 FormsAuthentication.SetAuthCookie(email, false);
-                return GetLoginRedirectAction();
+                return LoginAndRedirectToReturnUrl();
             }
 
             // Check credentials against old aspnet membership password
             if (AspNetMembershipLogin(user, password))
             {
                 FormsAuthentication.SetAuthCookie(email, false);
-                return GetLoginRedirectAction();
+                return LoginAndRedirectToReturnUrl();
             }
 
             return View();
@@ -106,6 +106,25 @@ namespace NietoYostenMvc.Controllers
             _users.SetPassword(user.ID, password);
 
             return true;
+        }
+
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Register(string email, string password, string confirm)
+        {
+            var result = _users.Register(email, password, confirm);
+
+            if (result.Success)
+            {
+                FormsAuthentication.SetAuthCookie(email, false);
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View();
         }
     }
 }
