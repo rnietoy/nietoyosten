@@ -114,16 +114,35 @@ namespace NietoYostenMvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult Register(string email, string password, string confirm)
+        public ActionResult Register(string email, string password, string confirm, string reason)
         {
             var result = _users.Register(email, password, confirm);
 
             if (result.Success)
             {
-                FormsAuthentication.SetAuthCookie(email, false);
-                return RedirectToAction("Index", "Home");
-            }
+                // Add approval request
+                try
+                {
+                    var db = new DynamicModel("NietoYostenDb", "ApprovalRequests");
+                    db.Insert(new {UserID = result.User.ID, Reason = reason});
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.ErrorMessage = "Ocurrió un error al solicitar la aprovación del usuario.";
+                    return View();
+                }
 
+                return RedirectToAction("RegistrationDone", "Account");
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Ocurrió un error al registrar el usuario.";
+                return View();
+            }
+        }
+
+        public ActionResult RegistrationDone()
+        {
             return View();
         }
     }

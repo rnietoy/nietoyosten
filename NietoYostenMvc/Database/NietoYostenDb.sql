@@ -90,3 +90,12 @@ CREATE TABLE [dbo].[Pictures] (
   CONSTRAINT [PK_Pictures] PRIMARY KEY CLUSTERED ([ID] ASC),
   CONSTRAINT [FK_Pictures_Albums] FOREIGN KEY ([AlbumID]) REFERENCES [dbo].[Albums] ([ID])
 );
+
+--------------------------------------- ApprovalRequests -----------------------------------------
+CREATE TABLE [dbo].[ApprovalRequests] (
+  [ID]          INT           IDENTITY(1,1) NOT NULL,
+  [UserID]      INT           NOT NULL,
+  [Reason]      nvarchar(255) NOT NULL,
+  CONSTRAINT [PK_ApprovalReqeusts] PRIMARY KEY CLUSTERED ([ID] ASC),
+  CONSTRAINT [FK_ApprovalRequests_Users] FOREIGN KEY ([UserID]) REFERENCES [dbo].[Users] ([ID])
+);

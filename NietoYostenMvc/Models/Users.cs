@@ -38,7 +38,7 @@ namespace NietoYostenMvc.Models
 
             try
             {
-                result.UserID = this.Insert(new { Email = email, HashedPassword = Crypto.HashPassword(password) });
+                result.User = this.Insert(new { Email = email, HashedPassword = Crypto.HashPassword(password) });
                 result.Success = true;
                 result.Message = "Thanks for signing up!";
             }
