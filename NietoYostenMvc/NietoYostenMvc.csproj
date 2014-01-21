@@ -169,6 +169,9 @@
   <ItemGroup>
     <Content Include="Views\Account\RegistrationDone.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Code\HTML.cshtml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

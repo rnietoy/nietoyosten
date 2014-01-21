@@ -65,5 +65,11 @@ namespace NietoYostenMvc.Models
         {
             return role.Equals(GetUserRole(email));
         }
+
+        public IEnumerable<string> GetUsersInRole(string role)
+        {
+            var result = this.All(columns: "Email", where: "Role=@0", args: role);
+            return result.Select(x => (string)x.Email);
+        }
     }
 }

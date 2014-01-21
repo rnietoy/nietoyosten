@@ -1,0 +1,10 @@
+﻿@helper ErrorMessage(string message)
+{ 
+    if (!string.IsNullOrWhiteSpace(message))
+    {
+        <div class="alert alert-danger">  
+            <a class="close" data-dismiss="alert" href="#" area-hidden="true">&times;</a>
+            @message
+        </div>
+    }    
+}

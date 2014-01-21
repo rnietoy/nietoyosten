@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -43,23 +44,38 @@ namespace NietoYostenMvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(string email, string password)
         {
-            var user = _users.Single("Email = @0", (object)email);
+            var user = _users.Single(where:"Email = @0", args:email);
+
+            // Check if user exists
+            if (null == user)
+            {
+                ViewBag.ErrorMessage = "Este usuario no existe.";
+                return View();
+            }
 
             // Regular credentials check
-            if (null != user && null != user.HashedPassword && Crypto.VerifyHashedPassword(user.HashedPassword, password))
+            if (null != user.HashedPassword && !Crypto.VerifyHashedPassword(user.HashedPassword, password))
             {
-                FormsAuthentication.SetAuthCookie(email, false);
-                return LoginAndRedirectToReturnUrl();
+                ViewBag.ErrorMessage = "El usuario y/o la contraseña no son correctos.";
+                return View();
             }
 
             // Check credentials against old aspnet membership password
-            if (AspNetMembershipLogin(user, password))
+            if (null == user.HashedPassword && !AspNetMembershipLogin(user, password))
             {
-                FormsAuthentication.SetAuthCookie(email, false);
-                return LoginAndRedirectToReturnUrl();
+                ViewBag.ErrorMessage = "El usuario y/o la contraseña no son correctos.";
+                return View();
             }
 
-            return View();
+            // Check if user is approved
+            if (!user.IsApproved)
+            {
+                ViewBag.ErrorMessage = "Este usuario no ha sido aprovado aún.";
+                return View();
+            }
+
+            FormsAuthentication.SetAuthCookie(email, false);
+            return LoginAndRedirectToReturnUrl();
         }
 
         public ActionResult Logout()
@@ -120,11 +136,13 @@ namespace NietoYostenMvc.Controllers
 
             if (result.Success)
             {
-                // Add approval request
+                // Add approval request and send a notification email
                 try
                 {
                     var db = new DynamicModel("NietoYostenDb", "ApprovalRequests");
                     db.Insert(new {UserID = result.User.ID, Reason = reason});
+
+                    SendNewUserRegistrationNotificationToAdmins(email, reason);
                 }
                 catch (Exception ex)
                 {
@@ -144,6 +162,32 @@ namespace NietoYostenMvc.Controllers
         public ActionResult RegistrationDone()
         {
             return View();
+        }
+
+        /// <summary>
+        /// Send an email notification to admins telling them that a new user
+        /// has registered and needs to be approved/rejected.
+        /// </summary>
+        private void SendNewUserRegistrationNotificationToAdmins(string userEmail, string reason)
+        {
+            var message = new MailMessage();
+            var fromAddress = new MailAddress("noreply@nietoyosten.com");
+            message.From = fromAddress;
+
+            var admins = _users.GetUsersInRole("admin");
+            foreach (var admin in admins)
+            {
+                message.To.Add(admin);
+            }
+
+            message.Subject = string.Format("User {0} has requested approval for the nietoyosten.com site", userEmail);
+            message.Body = "A new user has been registered on the Nieto Yosten web site. " +
+                           "Please log in to http://nietoyosten.com, go to the Admin section, and then " +
+                           "go to Users -> Approval Requests.\n\n" +
+                           "The reason given is:\n" + reason;
+
+            var smtpClient = new SmtpClient();
+            smtpClient.Send(message);
         }
     }
 }
