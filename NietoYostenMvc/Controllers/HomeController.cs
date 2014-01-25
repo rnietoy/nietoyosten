@@ -77,7 +77,7 @@ namespace NietoYostenMvc.Controllers
             return View();
         }
 
-        public ActionResult Members()
+        public ActionResult Family()
         {
             return View();
         }

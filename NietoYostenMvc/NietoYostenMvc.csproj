@@ -125,6 +125,16 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="Content\styles.css" />
     <Content Include="Global.asax" />
+    <Content Include="images\caras\ani2.jpg" />
+    <Content Include="images\caras\cristy.jpg" />
+    <Content Include="images\caras\dany2.jpg" />
+    <Content Include="images\caras\helen2.jpg" />
+    <Content Include="images\caras\jose2.jpg" />
+    <Content Include="images\caras\mami2.jpg" />
+    <Content Include="images\caras\marcos2.jpg" />
+    <Content Include="images\caras\mickey2.jpg" />
+    <Content Include="images\caras\papi2.jpg" />
+    <Content Include="images\caras\rafa2.jpg" />
     <Content Include="images\HomepNY.jpg" />
     <Content Include="images\nylogomas.png" />
     <Content Include="Scripts\jquery.validate.min.js" />
@@ -171,6 +181,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Code\HTML.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Family.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
