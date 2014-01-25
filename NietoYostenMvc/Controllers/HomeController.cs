@@ -54,7 +54,8 @@ namespace NietoYostenMvc.Controllers
 
             if (!article.IsPublic && null == CurrentUser)
             {
-                return RedirectToAction("Login", "Account", new { ReturnUrl = this.HttpContext.Request.RawUrl });
+                TempData["ReturnUrl"] = HttpContext.Request.RawUrl;
+                return RedirectToAction("Login", "Account");
             }
             return View(article);
         }

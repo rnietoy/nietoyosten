@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "ApprovalRequests";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@HTML.AlertMessage(ViewBag.AlertMessage, ViewBag.AlertClass)
+
+<h2>Usuarios que requieren aprovación al sitio</h2>
+@foreach (dynamic request in @Model)
+{
+    <hr />
+    <p>
+        <strong>Email:</strong> @request.Email<br />
+        <strong>Razón:</strong><br />
+        @request.Reason
+    </p>
+    <p>
+        <input type="button" value="Aprovar" id="approve-@request.ID"/>
+        <input type="button" value="Rechazar" id="reject-@request.ID"/>
+    </p>
+}
+
+<script type="text/javascript">
+    $('input').click(function(evt) {
+        console.log(evt.target.id);
+        var buttonId = evt.target.id;
+        var split = buttonId.split('-');
+        if (split[0] == "approve") {
+            console.log('Navigating to: ' + "~/Account/Approve/" + split[1]);
+            window.location.href = "Approve/" + split[1];
+        }
+        if (split[0] == "reject") {
+            console.log('Navigating to: ' + "~/Account/Approve/" + split[1]);
+            window.location.href = "Reject/" + split[1];
+        }
+    });
+</script>

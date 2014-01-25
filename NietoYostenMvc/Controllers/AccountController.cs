@@ -10,6 +10,7 @@ using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
 using Massive;
+using NietoYostenMvc.Code;
 using NietoYostenMvc.Models;
 
 namespace NietoYostenMvc.Controllers
@@ -17,7 +18,6 @@ namespace NietoYostenMvc.Controllers
     public class AccountController : ApplicationController
     {
         private Users _users;
-        private string _returnUrl = null;
 
         public AccountController()
         {
@@ -26,7 +26,9 @@ namespace NietoYostenMvc.Controllers
 
         public ActionResult Login()
         {
-            ViewBag.ReturnUrl = HttpContext.Request.QueryString.Get("ReturnUrl");
+            ViewBag.AlertMessage = TempData["AlertMessage"];
+            ViewBag.AlertClass = TempData["AlertClass"];
+            ViewBag.ReturnUrl = TempData["ReturnUrl"];
             return View();
         }
 
@@ -49,31 +51,36 @@ namespace NietoYostenMvc.Controllers
             // Check if user exists
             if (null == user)
             {
-                ViewBag.ErrorMessage = "Este usuario no existe.";
+                ViewBag.AlertMessage = "Este usuario no existe.";
+                ViewBag.AlertClass = "alert-danger";
                 return View();
             }
 
             // Regular credentials check
             if (null != user.HashedPassword && !Crypto.VerifyHashedPassword(user.HashedPassword, password))
             {
-                ViewBag.ErrorMessage = "El usuario y/o la contraseña no son correctos.";
+                ViewBag.AlertMessage = "El usuario y/o la contraseña no son correctos.";
+                ViewBag.AlertClass = "alert-danger";
                 return View();
             }
 
             // Check credentials against old aspnet membership password
             if (null == user.HashedPassword && !AspNetMembershipLogin(user, password))
             {
-                ViewBag.ErrorMessage = "El usuario y/o la contraseña no son correctos.";
+                ViewBag.AlertMessage = "El usuario y/o la contraseña no son correctos.";
+                ViewBag.AlertClass = "alert-danger";
                 return View();
             }
 
             // Check if user is approved
             if (!user.IsApproved)
             {
-                ViewBag.ErrorMessage = "Este usuario no ha sido aprovado aún.";
+                ViewBag.AlertMessage = "Este usuario no ha sido aprovado aún.";
+                ViewBag.AlertClass = "alert-danger";
                 return View();
             }
 
+            _users.Update(new {LastLogin = DateTime.Now}, user.ID);
             FormsAuthentication.SetAuthCookie(email, false);
             return LoginAndRedirectToReturnUrl();
         }
@@ -146,7 +153,8 @@ namespace NietoYostenMvc.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ViewBag.ErrorMessage = "Ocurrió un error al solicitar la aprovación del usuario.";
+                    ViewBag.AlertMessage = "Ocurrió un error al solicitar la aprovación del usuario.";
+                    ViewBag.AlertClass = "alert-danger";
                     return View();
                 }
 
@@ -154,7 +162,8 @@ namespace NietoYostenMvc.Controllers
             }
             else
             {
-                ViewBag.ErrorMessage = "Ocurrió un error al registrar el usuario.";
+                ViewBag.AlertMessage = "Ocurrió un error al registrar el usuario.";
+                ViewBag.AlertClass = "alert-danger";
                 return View();
             }
         }
@@ -188,6 +197,45 @@ namespace NietoYostenMvc.Controllers
 
             var smtpClient = new SmtpClient();
             smtpClient.Send(message);
+        }
+
+        [RequireRole(Role = "admin")]
+        public ActionResult ApprovalRequests()
+        {
+            IEnumerable<dynamic> requests = _users.Query("SELECT U.ID, U.Email, AR.Reason FROM Users U " +
+                         "INNER JOIN ApprovalRequests AR ON U.ID = AR.UserID");
+
+            ViewBag.AlertMessage = TempData["AlertMessage"];
+            ViewBag.AlertClass = TempData["AlertClass"];
+            return View(requests);
+        }
+
+        [RequireRole(Role = "admin")]
+        public ActionResult Approve(int id)
+        {
+            dynamic user = _users.Single(id);
+            user.IsApproved = true;
+            _users.Update(user, id);
+
+            var db = new DynamicModel("NietoYostenDb", "ApprovalRequests");
+            db.Delete(where: "UserID = @0", args: id);
+
+            TempData["AlertMessage"] = string.Format("El usuario {0} ha sido approvado.", user.Email);
+            return RedirectToAction("ApprovalRequests", "Account");
+        }
+
+        [RequireRole(Role = "admin")]
+        public ActionResult Reject(int id)
+        {
+            dynamic user = _users.Single(id);
+
+            var db = new DynamicModel("NietoYostenDb", "ApprovalRequests");
+            db.Delete(where: "UserID = @0", args: id);
+            _users.Delete(id);
+
+            TempData["AlertMessage"] = string.Format("El usuario {0} ha sido rechazado.", user.Email);
+            TempData["AlertClass"] = "alert-info";
+            return RedirectToAction("ApprovalRequests", "Account");
         }
     }
 }

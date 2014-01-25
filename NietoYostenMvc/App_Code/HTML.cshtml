@@ -8,3 +8,18 @@
         </div>
     }    
 }
+
+@helper AlertMessage(string message, string alertClass)
+{
+    if (!string.IsNullOrWhiteSpace(message))
+    {
+        if (string.IsNullOrWhiteSpace(alertClass))
+        {
+            alertClass = "alert-success";
+        }
+        <div class="alert @alertClass">
+            <a class="close" data-dismiss="alert" href="#" area-hidden="true">&times;</a>
+            @message
+        </div>
+    }
+}
