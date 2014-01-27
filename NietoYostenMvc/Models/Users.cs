@@ -11,6 +11,13 @@ namespace NietoYostenMvc.Models
 {
     public class Users : DynamicModel
     {
+        private enum Role
+        {
+            Admin,
+            Family,
+            Friend
+        };
+
         public Users() : base("NietoYostenDb", "Users", "ID") {}
 
         public dynamic Register(string email, string password, string confirm)
@@ -61,9 +68,20 @@ namespace NietoYostenMvc.Models
             return user.Role;
         }
 
-        public bool IsUserInRole(string email, string role)
+        /// <summary>
+        /// Check if a given user has the level of access specified by the given role.
+        /// For example, if the role argument is "family" and the user's role is "admin", then
+        /// this is will return true, since the "admin" role is a higher level of access than "family".
+        /// </summary>
+        /// <param name="email">Email of user whose role will be checked</param>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        public bool UserHasRole(string email, string role)
         {
-            return role.Equals(GetUserRole(email));
+            int userRoleLevel = (int) Enum.Parse(typeof (Role), GetUserRole(email), true);
+            int expectedRoleLevel = (int) Enum.Parse(typeof (Role), role, true);
+
+            return userRoleLevel <= expectedRoleLevel;
         }
 
         public IEnumerable<string> GetUsersInRole(string role)

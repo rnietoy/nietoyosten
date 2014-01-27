@@ -37,7 +37,7 @@ namespace NietoYostenMvc.Controllers
             if (!IsLoggedIn) return false;
 
             var db = new Users();
-            return db.IsUserInRole(CurrentUser, role);
+            return db.UserHasRole(CurrentUser, role);
         }
     }
 }

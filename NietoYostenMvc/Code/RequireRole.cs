@@ -21,7 +21,7 @@ namespace NietoYostenMvc.Code
             }
             else if (!controller.IsCurrentUserInRole(Role))
             {
-                controller.TempData["AlertMessage"] = "You need to be a logged as an admin to do that.";
+                controller.TempData["AlertMessage"] = "Este usuario no tiene accesso a esta sección.";
                 controller.TempData["AlertClass"] = "alert-danger";
                 controller.TempData["ReturnUrl"] = filterContext.HttpContext.Request.RawUrl;
                 filterContext.Result = new RedirectResult("~/account/login");

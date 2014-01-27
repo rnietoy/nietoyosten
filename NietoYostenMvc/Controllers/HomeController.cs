@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Massive;
+using NietoYostenMvc.Code;
 using NietoYostenMvc.Models;
 
 namespace NietoYostenMvc.Controllers
@@ -78,6 +79,7 @@ namespace NietoYostenMvc.Controllers
             return View();
         }
 
+        [RequireRole(Role = "friend")]
         public ActionResult Family()
         {
             return View();
