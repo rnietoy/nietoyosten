@@ -1,4 +1,5 @@
-﻿@{
+﻿@using NietoYostenMvc.Controllers
+@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -7,9 +8,14 @@
     <p><img src="~/Images/HomepNY.jpg" width="740px" alt="Nieto Yosten Family Picture" /></p>
 </div>
 
-@{
+@if (((ApplicationController) ViewContext.Controller).IsLoggedIn)
+{
     foreach (var article in @Model)
     {
         @Home.ArticleIntro(article)
     }
+}
+else
+{
+    <p>Bienvenidos a la pagina de la Familia Nieto Yosten! Utiliza el link de "Login" arriba para accesar el sitio.</p>
 }

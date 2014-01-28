@@ -18,28 +18,18 @@ namespace NietoYostenMvc.Controllers
         }
         public ActionResult Index()
         {
-            IEnumerable<dynamic> homePageArticles;
-            // Get home page articles
-            if (null == CurrentUser)
-            {
-                homePageArticles = _articles.GetHomePageArticles(true);
-            }
-            else
-            {
-                homePageArticles = _articles.GetHomePageArticles(false);
-            }
-
+            IEnumerable<dynamic> homePageArticles = _articles.GetHomePageArticles();
             return View(homePageArticles);
         }
 
+        [RequireLogin]
         public ActionResult ShowSection(string section)
         {
-            bool isAnonymous = (null == CurrentUser);
-            IEnumerable<dynamic> articles = _articles.GetArticlesBySection(section, isAnonymous);
-
+            IEnumerable<dynamic> articles = _articles.GetArticlesBySection(section);
             return View("Index", articles);
         }
 
+        [RequireLogin]
         public ActionResult ShowArticle(int ID)
         {
             dynamic article = _articles.GetArticle(ID);
@@ -53,11 +43,6 @@ namespace NietoYostenMvc.Controllers
                 return HttpNotFound();
             }
 
-            if (!article.IsPublic && null == CurrentUser)
-            {
-                TempData["ReturnUrl"] = HttpContext.Request.RawUrl;
-                return RedirectToAction("Login", "Account");
-            }
             return View(article);
         }
 
@@ -79,7 +64,7 @@ namespace NietoYostenMvc.Controllers
             return View();
         }
 
-        [RequireRole(Role = "friend")]
+        [RequireLogin]
         public ActionResult Family()
         {
             return View();

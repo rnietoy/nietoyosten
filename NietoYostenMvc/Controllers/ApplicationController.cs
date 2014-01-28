@@ -32,7 +32,7 @@ namespace NietoYostenMvc.Controllers
             }
         }
 
-        public bool IsCurrentUserInRole(string role)
+        public bool CurrentUserHasRole(string role)
         {
             if (!IsLoggedIn) return false;
 

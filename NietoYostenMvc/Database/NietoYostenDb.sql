@@ -38,7 +38,6 @@ CREATE TABLE [dbo].[Articles] (
 	[CreatedAt] 		DATETIME 			  DEFAULT (getdate()) NOT NULL,
 	[UpdatedAt] 		datetime        DEFAULT (getdate()) NOT NULL,
 	[IsPublished] 	bit 				    DEFAULT (0) NOT NULL,
-  [IsPublic]      bit             DEFAULT (0) NOT NULL,
     CONSTRAINT [PK_Articles] PRIMARY KEY CLUSTERED ([ID] ASC),
     CONSTRAINT [FK_Articles_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [dbo].[Users] ([ID]),
     CONSTRAINT [FK_Articles_Users_ModifiedBy] FOREIGN KEY ([ModifiedBy]) REFERENCES [dbo].[Users] ([ID]),
