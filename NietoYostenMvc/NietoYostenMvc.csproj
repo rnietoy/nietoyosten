@@ -39,6 +39,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Elmah">
+      <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -113,6 +116,11 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Elmah.Mvc\Bootstrap.cs" />
+    <Compile Include="Elmah.Mvc\ElmahController.cs" />
+    <Compile Include="Elmah.Mvc\ElmahResult.cs" />
+    <Compile Include="Elmah.Mvc\HandleErrorAttribute.cs" />
+    <Compile Include="Elmah.Mvc\Settings.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

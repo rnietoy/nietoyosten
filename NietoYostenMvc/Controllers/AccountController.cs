@@ -137,6 +137,7 @@ namespace NietoYostenMvc.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Register(string email, string password, string confirm, string reason)
         {
             var result = _users.Register(email, password, confirm);
