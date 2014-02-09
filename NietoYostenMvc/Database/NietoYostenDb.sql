@@ -11,7 +11,7 @@ CREATE TABLE [dbo].[Users] (
     [CreatedAt]      DATETIME       DEFAULT (getdate()) NOT NULL,
     [UpdatedAt]      DATETIME       DEFAULT (getdate()) NOT NULL,
     [IsApproved]     BIT            DEFAULT (0) NOT NULL,
-    [Role]           NVARCHAR (16)  DEFAULT ('friend') NOT NULL,
+    [Role]           NVARCHAR (16)  NULL,
     [FacebookUserID] INT            NULL,
     CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ([ID] ASC),
     CONSTRAINT [UQ_Users_Email] UNIQUE NONCLUSTERED ([Email] ASC)
