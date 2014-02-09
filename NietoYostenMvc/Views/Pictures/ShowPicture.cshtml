@@ -1,0 +1,10 @@
+﻿@{
+    ViewBag.Title = "ShowPicture";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="text-align: center">
+    <p><img src="~/Content/pictures/web/@Model.FolderName/@Model.FileName"/></p>
+    <p>@Model.Title</p>
+    <p><a href="~/Content/pictures/original/@Model.FolderName/@Model.FileName">Descargar original</a></p>
+</div>

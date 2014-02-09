@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Picture Albums</h2>
+
+@foreach (var album in @Model)
+{
+    <p><a href="~/pictures/@album.Title">@album.Title</a></p>
+}

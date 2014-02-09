@@ -46,29 +46,30 @@
 {
     <ul class="nav navbar-nav">
         <li><a href="~/">Home</a></li>
-        @if (controller.CurrentUserHasRole("friend"))
+        @if (controller.IsLoggedIn)
         {
             <li><a href="~/news">News</a></li>
             <li><a href="~/home/family">Family</a></li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Corners <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Papi</a></li>
-                    <li><a href="#">Mami</a></li>
-                    <li><a href="#">Rafa</a></li>
-                    <li><a href="#">Helen</a></li>
-                    <li><a href="#">Ani</a></li>
+                    <li><a href="~/sections/papi">Papi</a></li>
+                    <li><a href="~/sections/mami">Mami</a></li>
+                    <li><a href="~/sections/rafa">Rafa</a></li>
+                    <li><a href="~/sections/helen">Helen</a></li>
+                    <li><a href="~/sections/ani">Ani</a></li>
                 </ul>
             </li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sections <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Reflexiones</a></li>
-                    <li><a href="#">Citas</a></li>
-                    <li><a href="#">Chistes</a></li>
+                    <li><a href="~/sections/reflexiones">Reflexiones</a></li>
+                    <li><a href="~/sections/citas">Citas</a></li>
+                    <li><a href="~/sections/chistes">Chistes</a></li>
                 </ul>
             </li>
             <li><a href="#">Links</a></li>
+            <li><a href="~/pictures">Pictures</a></li>
         }
         <li><a href="http://fotki.com/nietoyosten">Fotki</a></li>
     </ul>
