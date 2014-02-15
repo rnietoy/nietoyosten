@@ -119,6 +119,7 @@
   <ItemGroup>
     <Compile Include="Code\ActionFilters.cs" />
     <Compile Include="Code\Massive.cs" />
+    <Compile Include="Code\UrlAuthModule.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />

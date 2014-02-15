@@ -12,25 +12,29 @@ namespace NietoYostenMvc.Controllers
 {
     public class ApplicationController : Controller
     {
+        public static dynamic GetCurrentUser(HttpContextBase context)
+        {
+            HttpCookie authCookie = context.Request.Cookies[FormsAuthentication.FormsCookieName];
+            if (null == authCookie) return null;
+
+            FormsAuthenticationTicket ticket = null;
+            try
+            {
+                ticket = FormsAuthentication.Decrypt(authCookie.Value);
+            }
+            catch (Exception ex)
+            {
+                ErrorSignal.FromCurrentContext().Raise(ex);
+            }
+
+            if (null != ticket) return ticket.Name;
+            return null;
+        }
         public dynamic CurrentUser
         {
             get
             {
-                HttpCookie authCookie = HttpContext.Request.Cookies[FormsAuthentication.FormsCookieName];
-                if (null == authCookie) return null;
-                
-                FormsAuthenticationTicket ticket = null;
-                try
-                {
-                    ticket = FormsAuthentication.Decrypt(authCookie.Value);
-                }
-                catch (Exception ex)
-                {
-                    ErrorSignal.FromCurrentContext().Raise(ex);
-                }
-
-                if (null != ticket) return ticket.Name;
-                return null;
+                return GetCurrentUser(HttpContext);
             }
         }
 
