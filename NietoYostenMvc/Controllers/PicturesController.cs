@@ -28,7 +28,7 @@ namespace NietoYostenMvc.Controllers
         public ActionResult ShowAlbum(string album)
         {
             var pictures = _pictures.Query(
-                "SELECT P.Title, P.FileName, A.FolderName FROM Pictures P " +
+                "SELECT P.ID, P.Title, P.FileName, A.FolderName FROM Pictures P " +
                 "INNER JOIN Albums A ON A.ID = P.AlbumID " +
                 "WHERE A.Title = @0",
                 album);
@@ -58,12 +58,12 @@ namespace NietoYostenMvc.Controllers
             return View(thumbArray);
         }
 
-        public ActionResult ShowPicture(string album, string picture)
+        public ActionResult ShowPicture(string album, int picture)
         {
             var model = _pictures.Query(
                 "SELECT P.Title, P.FileName, A.FolderName FROM Pictures P " +
                 "INNER JOIN Albums A ON A.ID = P.AlbumID " +
-                "WHERE A.Title = @0 AND P.Title = @1",
+                "WHERE A.Title = @0 AND P.ID = @1",
                 album, picture).First();
 
             return View((object)model);
