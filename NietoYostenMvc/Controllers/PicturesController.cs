@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Massive;
+using NietoYostenMvc.Code;
 
 namespace NietoYostenMvc.Controllers
 {
@@ -19,12 +20,14 @@ namespace NietoYostenMvc.Controllers
             _albums = new DynamicModel("NietoYostenDb", "Albums");
         }
 
+        [RequireLogin]
         public ActionResult Index()
         {
             var model = _albums.All();
             return View(model);
         }
 
+        [RequireLogin]
         public ActionResult ShowAlbum(string album)
         {
             int page;
@@ -72,11 +75,9 @@ namespace NietoYostenMvc.Controllers
             model.CurrentPage = page;
 
             return View((object)model);
-
-
-
         }
 
+        [RequireLogin]
         public ActionResult ShowPicture(string album, int picture)
         {
             var model = _pictures.Query(
@@ -87,6 +88,5 @@ namespace NietoYostenMvc.Controllers
 
             return View((object)model);
         }
-
     }
 }

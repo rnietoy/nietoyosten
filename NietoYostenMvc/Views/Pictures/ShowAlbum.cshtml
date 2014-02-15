@@ -8,25 +8,29 @@
         <p>Pictures menu</p>
     </div>
     
-    <!-- Picture thumbnails grid (4 pics per row) -->
     <div class="col-md-10">
         <!-- Title and pagination row -->
         <div class="row">
             <h2>@ViewBag.Title</h2>
-            <ul class="pagination">
-                @for (int i = 1; i <= @Model.TotalPages; i++)
-                {
-                    if (i == @Model.CurrentPage)
+            @if (@Model.TotalPages > 1)
+            {
+                <ul class="pagination">
+                    @for (int i = 1; i <= @Model.TotalPages; i++)
                     {
-                        <li class="active"><a href="~/pictures/@ViewBag.Title?Page=@i">@i</a></li>
+                        if (i == @Model.CurrentPage)
+                        {
+                            <li class="active"><a href="~/pictures/@ViewBag.Title?Page=@i">@i</a></li>
+                        }
+                        else
+                        {
+                            <li><a href="~/pictures/@ViewBag.Title?Page=@i">@i</a></li>
+                        }
                     }
-                    else
-                    {
-                        <li><a href="~/pictures/@ViewBag.Title?Page=@i">@i</a></li>
-                    }
-                }
-            </ul>
+                </ul>
+            }
         </div>
+        
+        <!-- Thumbnails grid (4 pics per row) -->
         @foreach (var row in @Model.ThumbArray)
         {
             <div class="row">
