@@ -27,11 +27,22 @@ namespace NietoYostenMvc.Controllers
 
         public ActionResult ShowAlbum(string album)
         {
-            var pictures = _pictures.Query(
-                "SELECT P.ID, P.Title, P.FileName, A.FolderName FROM Pictures P " +
-                "INNER JOIN Albums A ON A.ID = P.AlbumID " +
-                "WHERE A.Title = @0",
-                album);
+            int page;
+            if (!int.TryParse(this.Request.QueryString["page"], out page))
+            {
+                page = 1;
+            }
+
+            var picturesPaged = _pictures.Paged(
+                sql: "SELECT P.ID, P.Title, P.FileName, A.FolderName FROM Pictures P " +
+                     "INNER JOIN Albums A ON A.ID = P.AlbumID " +
+                     "WHERE A.Title = @0",
+                primaryKey: "ID",
+                currentPage: page,
+                pageSize: 40,
+                args: album);
+
+            var pictures = picturesPaged.Items;
 
             ViewBag.Title = album;
 
@@ -55,7 +66,15 @@ namespace NietoYostenMvc.Controllers
                 thumbArray.Add(currentRow);    
             }
 
-            return View(thumbArray);
+            dynamic model = new ExpandoObject();
+            model.ThumbArray = thumbArray;
+            model.TotalPages = picturesPaged.TotalPages;
+            model.CurrentPage = page;
+
+            return View((object)model);
+
+
+
         }
 
         public ActionResult ShowPicture(string album, int picture)

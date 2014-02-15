@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Elmah;
 using NietoYostenMvc.Models;
 
 namespace NietoYostenMvc.Controllers
@@ -14,12 +16,20 @@ namespace NietoYostenMvc.Controllers
         {
             get
             {
-                var authCookie = HttpContext.Request.Cookies[FormsAuthentication.FormsCookieName];
-                if (null != authCookie)
+                HttpCookie authCookie = HttpContext.Request.Cookies[FormsAuthentication.FormsCookieName];
+                if (null == authCookie) return null;
+                
+                FormsAuthenticationTicket ticket = null;
+                try
                 {
-                    var ticket = FormsAuthentication.Decrypt(authCookie.Value);
-                    return ticket.Name;
+                    ticket = FormsAuthentication.Decrypt(authCookie.Value);
                 }
+                catch (Exception ex)
+                {
+                    ErrorSignal.FromCurrentContext().Raise(ex);
+                }
+
+                if (null != ticket) return ticket.Name;
                 return null;
             }
         }
