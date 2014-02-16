@@ -19,11 +19,11 @@
                     {
                         if (i == @Model.CurrentPage)
                         {
-                            <li class="active"><a href="~/pictures/@ViewBag.Title?Page=@i">@i</a></li>
+                            <li class="active"><a href="~/pictures/@Model.FolderName?Page=@i">@i</a></li>
                         }
                         else
                         {
-                            <li><a href="~/pictures/@ViewBag.Title?Page=@i">@i</a></li>
+                            <li><a href="~/pictures/@Model.FolderName?Page=@i">@i</a></li>
                         }
                     }
                 </ul>
@@ -39,7 +39,7 @@
                     <div class="col-md-3">
                         <div class="thumbnail" style="text-align: center">
                             <p>
-                                <a href="~/pictures/@ViewBag.Title/@picture.ID">
+                                <a href="~/pictures/@picture.FolderName/@picture.ID">
                                     <img src="~/content/pictures/original/@picture.FolderName/@picture.FileName?Height=120" />
                                 </a>
                             </p>
