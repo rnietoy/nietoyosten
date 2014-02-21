@@ -184,7 +184,7 @@ namespace NietoYostenMvc.Controllers
         private void SendNewUserRegistrationNotificationToAdmins(string userEmail, string reason)
         {
             var message = new MailMessage();
-            var fromAddress = new MailAddress("noreply@nietoyosten.com");
+            var fromAddress = new MailAddress("noreply@nietoyosten.com", "NietoYosten");
             message.From = fromAddress;
 
             var admins = _users.GetUsersInRole("admin");
@@ -193,11 +193,11 @@ namespace NietoYostenMvc.Controllers
                 message.To.Add(admin);
             }
 
-            message.Subject = string.Format("User {0} has requested approval for the nietoyosten.com site", userEmail);
-            message.Body = "A new user has been registered on the Nieto Yosten web site. " +
-                           "Please log in to http://nietoyosten.com, go to the Admin section, and then " +
-                           "go to Users -> Approval Requests.\n\n" +
-                           "The reason given is:\n" + reason;
+            message.Subject = string.Format("User approval request for {0}", userEmail);
+            message.Body = string.Format("User {0} has requested approval to the nietoyosten.com site. " +
+                                         "Please go to http://nietoyosten.com/Account/ApprovalRequests " +
+                                         "to approve or reject this user.\n\n" +
+                                         "The reason given by the user is:\n{1}", userEmail, reason);
 
             var smtpClient = new SmtpClient();
             smtpClient.Send(message);
