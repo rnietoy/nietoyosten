@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@HTML.ErrorMessage(ViewBag.ErrorMessage)
+@HTML.AlertMessage(ViewBag.AlertMessage, ViewBag.AlertClass)
 <h2>Regístrate</h2>
 
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))

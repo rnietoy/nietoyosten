@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
+using Elmah;
 using Massive;
 using NietoYostenMvc.Code;
 using NietoYostenMvc.Models;
@@ -154,6 +155,8 @@ namespace NietoYostenMvc.Controllers
                 }
                 catch (Exception ex)
                 {
+                    ErrorSignal.FromCurrentContext().Raise(ex);
+
                     ViewBag.AlertMessage = "Ocurrió un error al solicitar la aprovación del usuario.";
                     ViewBag.AlertClass = "alert-danger";
                     return View();
