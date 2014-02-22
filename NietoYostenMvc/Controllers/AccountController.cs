@@ -101,9 +101,9 @@ namespace NietoYostenMvc.Controllers
         [HttpPost]
         public ActionResult PasswordReset(string email)
         {
-            // First check that user exists in our database
+            // First check that user exists in our database is approved
             var user = _users.Single(where: "Email = @0", args: email);
-            if (null == user)
+            if (null == user || !user.IsApproved)
             {
                 ViewBag.AlertMessage = "Este usuario no existe en el sitio.";
                 ViewBag.AlertClass = "alert-danger";
@@ -134,6 +134,9 @@ namespace NietoYostenMvc.Controllers
 
             var smtpClient = new SmtpClient();
             smtpClient.Send(message);
+
+            // Set new password
+            _users.SetPassword(user.ID, newPassword);
 
             ViewBag.AlertMessage = "Hemos enviado su nueva contraseña a su dirección de correo.";
             ViewBag.AlertClass = "alert-info";
