@@ -34,13 +34,13 @@ namespace NietoYostenMvc
 
             routes.MapRoute(
                 null,
-                url: "pictures/{album}",
+                url: "pictures/album/{album}",
                 defaults: new { controller = "Pictures", action = "ShowAlbum" }
             );
 
             routes.MapRoute(
                 null,
-                url: "pictures/{album}/{picture}",
+                url: "pictures/view/{pictureid}",
                 defaults: new { controller = "Pictures", action = "ShowPicture" }
             );
 
