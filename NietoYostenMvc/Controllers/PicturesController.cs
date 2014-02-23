@@ -90,17 +90,19 @@ namespace NietoYostenMvc.Controllers
         public ActionResult ShowPicture(int pictureid)
         {
             dynamic model = new ExpandoObject();
+            int albumId = (int)_albums.Scalar(
+                "SELECT AlbumID FROM Pictures WHERE ID = @0", pictureid);
 
             // Get picture details, including row number (to be used to calculate the album page)
             var query = _pictures.Query(
                 "SELECT * FROM " +
                 "  (SELECT ROW_NUMBER() OVER (ORDER BY P.ID) AS Row, P.ID, P.Title, P.FileName, A.FolderName " +
-                "  FROM Pictures P " +
-                "  INNER JOIN Albums A ON A.ID = P.AlbumID " +
-                "  WHERE A.FolderName = (SELECT FolderName FROM Albums WHERE ID = P.AlbumID) " +
+                "  FROM Pictures P" +
+                "  INNER JOIN Albums A ON A.ID = P.AlbumID" +
+                "  WHERE A.id = @0" +
                 "  ) T " +
-                "WHERE ID = @0",
-                pictureid);
+                "WHERE ID = @1",
+                albumId, pictureid);
 
             model.Picture = query.FirstOrDefault();
 
@@ -109,19 +111,20 @@ namespace NietoYostenMvc.Controllers
                 return HttpNotFound();
             }
 
-            // Get ID of previous picture in album
+            // Get ID of previous and next picture in album
             model.PreviousID = _pictures.Scalar(
                 "SELECT TOP 1 P.ID FROM Pictures P " +
                 "INNER JOIN Albums A ON A.ID = P.AlbumID " +
-                "WHERE P.ID < @0 ORDER BY P.ID DESC",
-                pictureid);
+                "WHERE A.ID = @0 " +
+                "AND P.ID < @1 ORDER BY P.ID DESC",
+                albumId, pictureid);
 
-            // Get ID of next picture in album
             model.NextID = _pictures.Scalar(
                 "SELECT TOP 1 P.ID FROM Pictures P " +
                 "INNER JOIN Albums A ON A.ID = P.AlbumID " +
-                "WHERE P.ID > @0 ORDER BY P.ID",
-                pictureid);
+                "WHERE A.ID = @0 " +
+                "AND P.ID > @1 ORDER BY P.ID",
+                albumId, pictureid);
 
             // Calculate page of requested picture in album
             long page = ((model.Picture.Row - 1)/AlbumPageSize) + 1;
