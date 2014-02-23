@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Upload";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Subit fotos</h2>
+
+<div id="ErrorMessage" class="alert alert-danger" style="display: none">
+    <a class="close" data-dismiss="alert" href="#" area-hidden="true">&times;</a>
+</div>
+
+<div id="TopParagraph">
+    <input type="file" id="files" name="files[]" multiple="true" value="Select Files" /><br/>
+    <input type="button" id="UploadButton" value="Upload" />
+</div>
+<br/>
+<table id="FileTable" class="table" style="display: none;">
+    <tr>
+        <th>File</th>
+        <th>Upload progress</th>
+        <th>Status</th>
+    </tr>
+</table>
+
+<script type="text/javascript" src="~/Scripts/UploadPicture.js"></script>
