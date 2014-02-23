@@ -141,7 +141,7 @@ namespace NietoYostenMvc.Controllers
         [RequireRole(Role = "family")]
         public ActionResult Upload(string id)
         {
-            return View();
+            return View((object)id);
         }
 
         private class UploadPictureDto
