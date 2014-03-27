@@ -78,6 +78,11 @@ namespace NietoYostenMvc.Models
         /// <returns></returns>
         public bool UserHasRole(string email, string role)
         {
+            if (null == role) return false;
+
+            string userRole = GetUserRole(email);
+            if (null == userRole) return false;
+
             int userRoleLevel = (int) Enum.Parse(typeof (Role), GetUserRole(email), true);
             int expectedRoleLevel = (int) Enum.Parse(typeof (Role), role, true);
 
