@@ -3,7 +3,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('#DeleteAlbumButton').click(function () {
-                var yes = confirm("Are you sure you want to delete the selected albums(s)? All pictures contained in the album(s) will be deleted as well.");
+                var yes = confirm("Are you sure you want to delete the selected albums(s)?  All pictures contained in the album(s) will be deleted as well.");
                 if (yes) {
                     $('#DeleteAlbumConfirmed').attr({ value: "true" });
                 } else {
