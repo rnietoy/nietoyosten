@@ -8,6 +8,10 @@ backup/
 LocalDeploy/
 NietoYostenWebApp/App_Data/
 NietoYostenWebApp/pictures/
+NietoYostenWebApp/images/caras/
+NietoYostenWebApp/images/stories/
+NietoYostenWebApp/LuceneIndex/
+NietoYostenWebApp/NietoYostenWebApp.Publish.xml
 elmahlog/
 *.suo
 *.sln.cache
