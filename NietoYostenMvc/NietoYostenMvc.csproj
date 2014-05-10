@@ -215,6 +215,7 @@
     <Content Include="Views\Pictures\ShowAlbum.cshtml" />
     <Content Include="Views\Pictures\ShowPicture.cshtml" />
     <Content Include="Views\Pictures\Upload.cshtml" />
+    <Content Include="Views\Pictures\AddAlbum.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -81,7 +81,8 @@ CREATE TABLE [dbo].[Albums] (
   [ModifiedBy]    int             NOT NULL,
   [CreatedAt]     datetime        DEFAULT (getdate()) NOT NULL,
   [ModifiedAt]    datetime        DEFAULT (getdate()) NOT NULL,
-  CONSTRAINT [PK_Albums] PRIMARY KEY CLUSTERED ([ID] ASC)
+  CONSTRAINT [PK_Albums] PRIMARY KEY CLUSTERED ([ID] ASC),
+  CONSTRAINT [UQ_Albums_FolderName] UNIQUE NONCLUSTERED ([FolderName] ASC),
   CONSTRAINT [FK_Albums_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [dbo].[Users] ([ID]),
   CONSTRAINT [FK_Albums_Users_ModifiedBy] FOREIGN KEY ([ModifiedBy]) REFERENCES [dbo].[Users] ([ID]),
 );

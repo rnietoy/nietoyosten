@@ -38,6 +38,15 @@ namespace NietoYostenMvc.Controllers
             }
         }
 
+        public int CurrentUserID
+        {
+            get
+            {
+                var users = new Users();
+                return users.Scalar("SELECT ID FROM Users WHERE Email=@0", CurrentUser);
+            }
+        }
+
         public bool IsLoggedIn
         {
             get

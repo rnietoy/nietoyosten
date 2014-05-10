@@ -1,0 +1,28 @@
+﻿@{
+    ViewBag.Title = "AddAlbum";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Agregar álbum</h2>
+
+@using (Html.BeginForm("AddAlbum", "Pictures", FormMethod.Post, new { role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <div class="row">
+        <div class="col-md-5">
+            <div class="form-group">
+                <label for="title">Nombre del álbum</label>
+                <input type="text" class="form-control" name="title" data-val="true" data-val-required="Requerido">
+                <span class="field-validation-valid" data-valmsg-for="title" data-valmsg-replace="true"></span>
+            </div>
+            <div class="form-group">
+                <label for="folder">Nombre del folder</label>
+                <input type="text" class="form-control" name="folder" data-val="true" data-val-required="Requerido">
+                <span class="field-validation-valid" data-valmsg-for="folder" data-valmsg-replace="true"></span>
+                <span class="help-block">Este nombre será usado para la dirección (URL) del álbum en la página.</span>
+            </div>
+            <button type="submit" class="btn btn-default">Enviar</button>
+        </div>
+    </div>
+}

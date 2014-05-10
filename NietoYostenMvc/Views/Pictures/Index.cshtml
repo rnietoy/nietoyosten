@@ -3,9 +3,24 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Picture Albums</h2>
+<!-- Page Title row -->
+<div class="row">
+    <div class="col-md-10 col-md-offset-2">
+        <h2>Álbumes de fotos</h2>
+    </div>
+</div>
 
-@foreach (var album in @Model)
-{
-    <p><a href="~/pictures/album/@album.FolderName">@album.Title</a></p>
-}
+<div class="row">
+    <!-- Menu column -->
+    <div class="col-md-2">
+        <p><a href="~/pictures/AddAlbum">Agregar álbum</a></p>
+    </div>
+
+    <!-- Main page -->
+    <div class="col-md-10">
+        @foreach (var album in @Model)
+        {
+            <p><a href="~/pictures/album/@album.FolderName">@album.Title</a></p>
+        }
+    </div>
+</div>

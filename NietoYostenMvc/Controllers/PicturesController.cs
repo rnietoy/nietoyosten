@@ -259,5 +259,26 @@ namespace NietoYostenMvc.Controllers
 
             return Json("La imagen se subió con éxito");
         }
+
+        [RequireRole(Role = "family")]
+        public ActionResult AddAlbum()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [RequireRole(Role = "family")]
+        public ActionResult AddAlbum(string title, string folder)
+        {
+            _albums.Insert(new
+            {
+                Title = title,
+                FolderName = folder,
+                CreatedBy = CurrentUserID,
+                ModifiedBy = CurrentUserID
+            });
+
+            return RedirectToAction("Index");
+        }
     }
 }

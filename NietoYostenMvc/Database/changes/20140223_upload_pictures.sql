@@ -15,3 +15,5 @@ ALTER TABLE [Albums] ADD
 
 ALTER TABLE [Albums] DROP CONSTRAINT [DF_Albums_CreatedBy]
 ALTER TABLE [Albums] DROP CONSTRAINT [DF_Albums_ModifiedBy]
+
+ALTER TABLE Albums ADD [UQ_Albums_FolderName] UNIQUE NONCLUSTERED ([FolderName] ASC)
