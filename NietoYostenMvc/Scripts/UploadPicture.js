@@ -45,11 +45,7 @@ function getEndFileUploadHandler(files, fileIndex) {
             reader.onload = getOnloadHandler(files, fileIndex);
             reader.readAsArrayBuffer(files[fileIndex]);
         } else {
-            // Tell user we are done. Add link to return to album.
-            var url = "pictures/album/" + getAlbumFolder();
-            var link = $('<a>').attr("href", url).text("Go back to album");
-            var line = $('<p>').text("Upload complete!").append(link);
-            $('#TopParagraph').append(line);
+            // We are done!
         }
     };
 }
@@ -184,9 +180,8 @@ $(document).ready(function () {
 
         // Add files to global array
         window.imageFiles = filesToAdd;
-    });
 
-    $('#UploadButton').click(function (evt) {
+        // Start uploading files
         var reader = new FileReader();
         reader.onload = getOnloadHandler(window.imageFiles, 0);
         reader.readAsArrayBuffer(window.imageFiles[0]);

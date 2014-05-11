@@ -7,36 +7,28 @@
     <a class="close" data-dismiss="alert" href="#" area-hidden="true">&times;</a>
 </div>
 
-<!-- Page Title row -->
 <div class="row">
-    <div class="col-md-10 col-md-offset-2">
-        <h2>Subir fotos</h2>
-    </div>
-</div>
+    <!-- Menu -->
+    <a href="~/pictures/album/@Model">Regresar al álbum</a>
+    <hr />
 
-<div class="row">
-    <!-- Menu column -->
-    <div class="col-md-2">
-        <p><a href="~/pictures/album/@Model">Regresar al álbum</a></p>
-        <p><input type="button" id="UploadButton" value="Comenzar carga" /></p>
-    </div>
-    
+    <!-- Page Title -->
+    <h2>Subir fotos</h2>
+
     <!-- Upload page -->
-    <div class="col-md-10">
-        <div id="TopParagraph">
-            <p>
-                <input type="file" id="files" name="files[]" multiple="true" value="Select Files" />   
-            </p>
-        </div>
-        <br />
-        <table id="FileTable" class="table" style="display: none;">
-            <tr>
-                <th>File</th>
-                <th>Upload progress</th>
-                <th>Status</th>
-            </tr>
-        </table>
+    <div id="TopParagraph">
+        <p>
+            <input type="file" id="files" name="files[]" multiple="true" value="Select Files" />
+        </p>
     </div>
+    <br />
+    <table id="FileTable" class="table" style="display: none;">
+        <tr>
+            <th>File</th>
+            <th>Upload progress</th>
+            <th>Status</th>
+        </tr>
+    </table>
 </div>
 
 <script type="text/javascript" src="~/Scripts/UploadPicture.js"></script>
