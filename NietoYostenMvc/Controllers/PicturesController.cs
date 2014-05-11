@@ -270,14 +270,26 @@ namespace NietoYostenMvc.Controllers
         [RequireRole(Role = "family")]
         public ActionResult AddAlbum(string title, string folder)
         {
-            _albums.Insert(new
+            try
             {
-                Title = title,
-                FolderName = folder,
-                CreatedBy = CurrentUserID,
-                ModifiedBy = CurrentUserID
-            });
+                Directory.CreateDirectory(HttpContext.Server.MapPath("~/content/pictures/original/" + folder));
 
+                _albums.Insert(new
+                {
+                    Title = title,
+                    FolderName = folder,
+                    CreatedBy = CurrentUserID,
+                    ModifiedBy = CurrentUserID
+                });
+            }
+            catch (Exception ex)
+            {
+                ErrorSignal.FromCurrentContext().Raise(ex);
+
+                ViewBag.AlertMessage = "Ocurrió un error al crear el álbum.";
+                ViewBag.AlertClass = "alert-danger";
+                return View();
+            }
             return RedirectToAction("Index");
         }
     }
