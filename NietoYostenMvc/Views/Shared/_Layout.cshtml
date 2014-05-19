@@ -28,28 +28,34 @@
             </div>
         </div>
         <!-- Menu and search bar -->
-        <div class="navbar navbar-default" role="navigation">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            </div>
-            <div class="navbar-collapse collapse">
-                <!-- Menu items: replace with helper/partial to generate code based on current logged in user -->
-                @Home.MenuItems(ViewContext.Controller as ApplicationController)
+        <div class="row">
+            <div class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <!-- Menu items: replace with helper/partial to generate code based on current logged in user -->
+                    @Home.MenuItems(ViewContext.Controller as ApplicationController)
+                </div>
             </div>
         </div>
     </div>
 
     <div class="container body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2014 - Nieto Yosten Website</p>
-        </footer>
+        
+        <!-- Copyright row -->
+        <div class="row">
+            <hr />
+            <footer>
+                <p>&copy; 2014 - Nieto Yosten Website</p>
+            </footer>    
+        </div>
     </div>
 
     <!-- Bootstrap JavaScript -->

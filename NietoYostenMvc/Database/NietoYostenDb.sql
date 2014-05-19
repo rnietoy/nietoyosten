@@ -74,10 +74,17 @@ CREATE TABLE [dbo].[Weblinks] (
 
 --------------------------------------- Albums ---------------------------------------------------
 CREATE TABLE [dbo].[Albums] (
-  [ID]          int             IDENTITY(1,1) NOT NULL,
-  [Title]       nvarchar(64)    NOT NULL,
-  [FolderName]  nvarchar(64)    NOT NULL,
-  CONSTRAINT [PK_Albums] PRIMARY KEY CLUSTERED ([ID] ASC)
+  [ID]            int             IDENTITY(1,1) NOT NULL,
+  [Title]         nvarchar(64)    NOT NULL,
+  [FolderName]    nvarchar(64)    NOT NULL,
+  [CreatedBy]     int             NOT NULL,
+  [ModifiedBy]    int             NOT NULL,
+  [CreatedAt]     datetime        DEFAULT (getdate()) NOT NULL,
+  [ModifiedAt]    datetime        DEFAULT (getdate()) NOT NULL,
+  CONSTRAINT [PK_Albums] PRIMARY KEY CLUSTERED ([ID] ASC),
+  CONSTRAINT [UQ_Albums_FolderName] UNIQUE NONCLUSTERED ([FolderName] ASC),
+  CONSTRAINT [FK_Albums_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [dbo].[Users] ([ID]),
+  CONSTRAINT [FK_Albums_Users_ModifiedBy] FOREIGN KEY ([ModifiedBy]) REFERENCES [dbo].[Users] ([ID]),
 );
 
 --------------------------------------- Pictures -------------------------------------------------

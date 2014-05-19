@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = "Upload";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="ErrorMessage" class="alert alert-danger" style="display: none">
+    <a class="close" data-dismiss="alert" href="#" area-hidden="true">&times;</a>
+</div>
+
+<div class="row">
+    <!-- Menu -->
+    <a href="~/pictures/album/@Model">Regresar al álbum</a>
+    <hr />
+
+    <!-- Page Title -->
+    <h2>Subir fotos</h2>
+
+    <!-- Upload page -->
+    <div id="TopParagraph">
+        <p>
+            <input type="file" id="files" name="files[]" multiple="true" value="Select Files" />
+        </p>
+    </div>
+    <br />
+    <table id="FileTable" class="table" style="display: none;">
+        <tr>
+            <th>File</th>
+            <th>Upload progress</th>
+            <th>Status</th>
+        </tr>
+    </table>
+</div>
+
+<script type="text/javascript" src="~/Scripts/UploadPicture.js"></script>

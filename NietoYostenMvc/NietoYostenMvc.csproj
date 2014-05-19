@@ -133,6 +133,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Articles.cs" />
+    <Compile Include="Models\Pictures.cs" />
     <Compile Include="Models\Users.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -141,6 +142,11 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="Content\styles.css" />
+    <Content Include="Database\changes\20140209_remove_dots_from_picture_titles.sql" />
+    <Content Include="Database\changes\20140223_upload_pictures.sql" />
+    <Content Include="Database\MigrateToVersion2.sql" />
+    <Content Include="Database\nietoyosten2-bootstrap.sql" />
+    <Content Include="Database\NietoYostenDb.sql" />
     <Content Include="Global.asax" />
     <Content Include="images\caras\ani2.jpg" />
     <Content Include="images\caras\cristy.jpg" />
@@ -157,6 +163,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\UploadPicture.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -212,6 +219,8 @@
     <Content Include="Views\Pictures\Index.cshtml" />
     <Content Include="Views\Pictures\ShowAlbum.cshtml" />
     <Content Include="Views\Pictures\ShowPicture.cshtml" />
+    <Content Include="Views\Pictures\Upload.cshtml" />
+    <Content Include="Views\Pictures\AddAlbum.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

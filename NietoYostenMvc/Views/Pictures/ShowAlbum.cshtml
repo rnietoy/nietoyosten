@@ -2,36 +2,39 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="row">
-    <!-- Pictures menu column -->
-    <div class="col-md-2">
-        <p>Pictures menu</p>
-    </div>
-    
-    <div class="col-md-10">
-        <!-- Title and pagination row -->
-        <div class="row">
-            <h2>@ViewBag.Title</h2>
-            @if (@Model.TotalPages > 1)
+<div class="row">    
+    <!-- Menu -->
+    <a href="~/Pictures">Lista de álbumes</a>
+    <span> | </span>
+    <a href="~/Pictures/Upload/@Model.FolderName">Agregar fotos</a>
+    <hr/>
+
+    <h2>@ViewBag.Title</h2>
+    @if (@Model.TotalPages > 1)
+    {
+        <ul class="pagination">
+            @for (int i = 1; i <= @Model.TotalPages; i++)
             {
-                <ul class="pagination">
-                    @for (int i = 1; i <= @Model.TotalPages; i++)
-                    {
-                        if (i == @Model.CurrentPage)
-                        {
-                            <li class="active"><a href="~/pictures/@Model.FolderName?Page=@i">@i</a></li>
-                        }
-                        else
-                        {
-                            <li><a href="~/pictures/@Model.FolderName?Page=@i">@i</a></li>
-                        }
-                    }
-                </ul>
+                if (i == @Model.CurrentPage)
+                {
+                    <li class="active"><a href="~/pictures/album/@Model.FolderName?Page=@i">@i</a></li>
+                }
+                else
+                {
+                    <li><a href="~/pictures/album/@Model.FolderName?Page=@i">@i</a></li>
+                }
             }
-        </div>
+        </ul>
+    }
         
-        <!-- Thumbnails grid (4 pics per row) -->
-        @foreach (var row in @Model.ThumbArray)
+    <!-- Thumbnails grid (4 pics per row) -->
+    @if (@Model.ThumbArray.Count == 0)
+    {
+        <p>Este álbum está vacio.</p>
+    }
+    else
+    {
+        foreach (var row in @Model.ThumbArray)
         {
             <div class="row">
                 @foreach (var picture in row)
@@ -39,7 +42,7 @@
                     <div class="col-md-3">
                         <div class="thumbnail" style="text-align: center">
                             <p>
-                                <a href="~/pictures/@picture.FolderName/@picture.ID">
+                                <a href="~/pictures/view/@picture.ID">
                                     <img src="~/content/pictures/original/@picture.FolderName/@picture.FileName?Height=120" />
                                 </a>
                             </p>
@@ -49,5 +52,5 @@
                 }
             </div>
         }
-    </div>
+    }
 </div>
