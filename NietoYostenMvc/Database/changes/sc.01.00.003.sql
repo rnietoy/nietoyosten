@@ -4,7 +4,7 @@
 -- Description:    Change Albumns, Pictures tables for upload functionality:
 --                 add CreatedAt, CreatedBy, UpdatedAt, and UpdatedBy columns.
 -- Schema version: 01.00.003
--- Status:         in development
+-- Status:         deployed
 
 ------------------------------ script code ----------------------------------------------
 
