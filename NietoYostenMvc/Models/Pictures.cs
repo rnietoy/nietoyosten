@@ -16,7 +16,7 @@ namespace NietoYostenMvc.Models
         {
         }
 
-        public dynamic Add(string folderName, string fileName)
+        public dynamic Add(string folderName, string fileName, int userId)
         {
             dynamic result = new ExpandoObject();
             result.Success = false;
@@ -29,7 +29,8 @@ namespace NietoYostenMvc.Models
                 {
                     AlbumID = albumId,
                     Title = fileName,
-                    FileName = fileName
+                    FileName = fileName,
+                    UploadedBy = userId
                 });
 
                 result.Success = true;

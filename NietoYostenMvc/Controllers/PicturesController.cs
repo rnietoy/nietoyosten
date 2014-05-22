@@ -255,7 +255,7 @@ namespace NietoYostenMvc.Controllers
             }
 
             // Add picture to database
-            _pictures.Add(folderName, fileName);
+            _pictures.Add(folderName, fileName, CurrentUserID);
 
             return Json("La imagen se subió con éxito");
         }
