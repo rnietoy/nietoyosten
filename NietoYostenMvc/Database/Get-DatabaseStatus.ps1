@@ -25,6 +25,7 @@ $currentVersion = Get-CurrentVersion $changes
 Write-Host "Current version: $currentVersion`n"
 
 Write-Host 'The following updates are available:'
+$scripts = Get-ChangeScripts
 $available = Get-AvailableScripts $scripts $changes 'latest'
 
 if ($available -eq $null) {

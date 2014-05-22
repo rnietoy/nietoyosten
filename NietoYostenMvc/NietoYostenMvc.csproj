@@ -142,22 +142,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="Content\styles.css" />
-    <Content Include="Database\changes\20140209_remove_dots_from_picture_titles.sql" />
-    <Content Include="Database\changes\20140223_upload_pictures.sql" />
-    <Content Include="Database\MigrateToVersion2.sql" />
-    <Content Include="Database\nietoyosten2-bootstrap.sql" />
-    <Content Include="Database\NietoYostenDb.sql" />
+    <None Include="Database\MigrateToVersion2.sql" />
+    <None Include="Database\NietoYostenDb.sql" />
     <Content Include="Global.asax" />
-    <Content Include="images\caras\ani2.jpg" />
-    <Content Include="images\caras\cristy.jpg" />
-    <Content Include="images\caras\dany2.jpg" />
-    <Content Include="images\caras\helen2.jpg" />
-    <Content Include="images\caras\jose2.jpg" />
-    <Content Include="images\caras\mami2.jpg" />
-    <Content Include="images\caras\marcos2.jpg" />
-    <Content Include="images\caras\mickey2.jpg" />
-    <Content Include="images\caras\papi2.jpg" />
-    <Content Include="images\caras\rafa2.jpg" />
     <Content Include="images\HomepNY.jpg" />
     <Content Include="images\nylogomas.png" />
     <Content Include="Scripts\jquery.validate.min.js" />
@@ -177,6 +164,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Database\changes\" />
+    <Folder Include="images\caras\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
