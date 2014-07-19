@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <!-- Menu -->
+    <span>Sección: </span>
+    <select name="Section">
+        <option value="1">Papi</option>
+        <option value="2">Ani</option>
+    </select>
+    <span> | </span>
+    <a href="~/Article/Add">Nuevo artículo</a>
+    <span> | </span>
+    <a href="~/Article/Delete">Borrar artículo(s)</a>
+    <hr />
+    
+    <h2>Administración de artículos</h2>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" /></th>
+                <th>Fecha</th>
+                <th>Título</th>
+                <th>Autor</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var article in @Model)
+            {
+                <tr>
+                    <td><input type="checkbox" /></td>
+                    <td>@article.CreatedAt.ToString("d")</td>
+                    <td><a href="#">@article.Title</a></td>
+                    <td>@article.Email</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
