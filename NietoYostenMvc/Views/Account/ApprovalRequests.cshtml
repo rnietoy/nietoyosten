@@ -3,8 +3,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@HTML.AlertMessage(ViewBag.AlertMessage, ViewBag.AlertClass)
-
 <h2>Usuarios que requieren aprovación al sitio</h2>
 @foreach (dynamic request in @Model)
 {

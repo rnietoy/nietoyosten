@@ -13,12 +13,15 @@
 #
 #    The only exception is the baseline / initial script.
 
+$CurrentPath = $pwd
+
 function Execute-Query ([string]$query, $variables) {
   if ($credential -eq $null) {
     Invoke-Sqlcmd -ServerInstance $ServerInstance -Database $Database -ErrorAction stop -Query $query -Variable $variables
   } else {
     Invoke-Sqlcmd -ServerInstance $ServerInstance -Database $Database -Username $cred.UserName -Password $cred.GetNetworkCredential().password -ErrorAction stop -Query $query -Variable $variables
   }
+  cd $CurrentPath
 }
 
 function Execute-SqlScript ([string]$script) {
@@ -27,6 +30,7 @@ function Execute-SqlScript ([string]$script) {
   } else {
     Invoke-Sqlcmd -ServerInstance $ServerInstance -Database $Database -Username $cred.UserName -Password $cred.GetNetworkCredential().password -ErrorAction stop -InputFile $script
   }
+  cd $CurrentPath
 }
 
 function Get-SchemaLogChanges {

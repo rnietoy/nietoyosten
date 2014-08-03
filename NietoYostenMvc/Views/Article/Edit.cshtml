@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = @Model.PageTitle;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts {
+    <script src="//cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script>
+}
+
+@model NietoYostenMvc.Models.EditArticleViewModel
+
+<div class="row">
+    <!-- Page title -->
+    <h2>@Model.PageTitle</h2>
+
+    @using (Html.BeginForm(@Model.Action, "Article", FormMethod.Post, new { role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            <label for="title">Título</label>
+            <input type="text" class="form-control" name="Title" data-val="true" data-val-required="Requerido" value="@Model.Title">
+            <span class="field-validation-valid" data-valmsg-for="title" data-valmsg-replace="true"></span>
+        </div>
+        <div class="checkbox">
+            <label>
+                @Html.CheckBoxFor(m => m.IsPublished) Publicar artículo
+            </label>
+        </div>
+        <div class="form-group">
+            <label for="folder">Texto de introducción</label>
+            <textarea name="IntroText">@Model.IntroText</textarea>
+            <script>
+                CKEDITOR.replace('IntroText');
+            </script>
+
+        </div>
+        <div class="form-group">
+            <label for="title">Contenido</label>
+            <textarea name="Content">@Model.Content</textarea>
+            <script>
+                CKEDITOR.replace('Content');
+            </script>
+        </div>
+
+        <input type="hidden" name="SectionID" value="@Model.SectionID" />
+        <input type="hidden" name="ArticleID" value="@Model.ArticleID" />
+
+        <button type="submit" class="btn btn-default">Guardar</button>
+    }
+</div>

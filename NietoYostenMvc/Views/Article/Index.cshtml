@@ -3,19 +3,19 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@model NietoYostenMvc.Models.ArticleIndexViewModel
+
 <div class="row">
     <!-- Menu -->
     <span>Sección: </span>
-    <select name="Section">
-        <option value="1">Papi</option>
-        <option value="2">Ani</option>
-    </select>
+    @Html.DropDownListFor(m => m.SelectedSection, Model.SectionOptions)
     <span> | </span>
-    <a href="~/Article/Add">Nuevo artículo</a>
+    <a href="~/Article/Add/@Model.SelectedSection">Nuevo artículo</a>
     <span> | </span>
     <a href="~/Article/Delete">Borrar artículo(s)</a>
     <hr />
     
+    <!-- Page title -->
     <h2>Administración de artículos</h2>
     
     <table class="table">
@@ -25,18 +25,30 @@
                 <th>Fecha</th>
                 <th>Título</th>
                 <th>Autor</th>
+                <th>Publicado</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var article in @Model)
+            @foreach (var article in @Model.Articles)
             {
                 <tr>
                     <td><input type="checkbox" /></td>
                     <td>@article.CreatedAt.ToString("d")</td>
-                    <td><a href="#">@article.Title</a></td>
+                    <td><a href="~/Article/Edit/@article.ID">@article.Title</a></td>
                     <td>@article.Email</td>
+                    <td>@(article.IsPublished ? "Si" : "No")</td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
+<script type="text/javascript">
+    // jQuery event wireups
+    $(document).ready(function() {
+        $('#SelectedSection').change(function (evt) {
+            var sectionId = evt.target.value;
+            window.location.href = "/Article/Index/" + sectionId;
+        });
+    });
+</script>

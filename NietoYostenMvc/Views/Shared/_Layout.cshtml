@@ -1,65 +1,64 @@
 ﻿@using NietoYostenMvc.Controllers
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - Nieto Yosten Family</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
-    <!-- NietoYosten CSS -->
-    <link rel="stylesheet" href="~/content/styles.css">
-    <!-- jQuery -->
-    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
-    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-    <script src="http://ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>
-</head>
-<body>
-    <!-- Page body container -->
-    <div class="container">
-        <!-- Logo and login bar -->
-        <div class="row logobar">
-            <div class="col-md-9">
-                <img src="~/images/nylogomas.png" />
-            </div>
-            <div class="col-md-3 login-corner">
-                @Home.LoginInfo(ViewContext.Controller as ApplicationController)
-            </div>
-        </div>
-        <!-- Menu and search bar -->
-        <div class="row">
-            <div class="navbar navbar-default" role="navigation">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>@ViewBag.Title - Nieto Yosten Family</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+        <!-- NietoYosten CSS -->
+        <link rel="stylesheet" href="~/content/styles.css">
+        <!-- jQuery -->
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>
+        <!-- Bootstrap JavaScript -->
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        @RenderSection("Scripts", false)
+    </head>
+    <body>
+        <!-- Page body container -->
+        <div class="container">
+            <!-- Logo and login bar -->
+            <div class="row logobar">
+                <div class="col-md-9">
+                    <img src="~/images/nylogomas.png" />
                 </div>
-                <div class="navbar-collapse collapse">
-                    <!-- Menu items: replace with helper/partial to generate code based on current logged in user -->
-                    @Home.MenuItems(ViewContext.Controller as ApplicationController)
+                <div class="col-md-3 login-corner">
+                    @Home.LoginInfo(ViewContext.Controller as ApplicationController)
                 </div>
             </div>
+            <!-- Menu and search bar -->
+            <div class="row">
+                <div class="navbar navbar-default" role="navigation">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                    <div class="navbar-collapse collapse">
+                        @Home.MenuItems(ViewContext.Controller as ApplicationController)
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="container body-content">
-        @RenderBody()
+        <div class="container body-content">
+            @HTML.AlertMessage(ViewBag.AlertMessage, ViewBag.AlertClass)    
+            @RenderBody()
         
-        <!-- Copyright row -->
-        <div class="row">
-            <hr />
-            <footer>
-                <p>&copy; 2014 - Nieto Yosten Website</p>
-            </footer>    
+            <!-- Copyright row -->
+            <div class="row">
+                <hr />
+                <footer>
+                    <p>&copy; 2014 - Nieto Yosten Website</p>
+                </footer>    
+            </div>
         </div>
-    </div>
-
-    <!-- Bootstrap JavaScript -->
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-
-</body>
+    </body>
 </html>

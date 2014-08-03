@@ -3,7 +3,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@HTML.AlertMessage(ViewBag.AlertMessage, ViewBag.AlertClass)
 <h2>Member Log In</h2>
 
 @using (Html.BeginForm("Login", "Account", new {ReturnUrl = ViewBag.ReturnUrl}, FormMethod.Post, new {role = "form"}))
