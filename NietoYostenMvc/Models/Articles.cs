@@ -31,10 +31,12 @@ namespace NietoYostenMvc.Models
 
         public EditArticleViewModel GetEditArticleViewModel(int ID)
         {
-            IEnumerable<dynamic> results = this.Query("SELECT A.Title, A.IntroText, A.Content, A.CreatedAt, A.IsPublished, S.ID AS SectionID " +
-                           "FROM Articles A " +
-                           "INNER JOIN Sections S ON S.ID = A.SectionID " +
-                           "WHERE A.ID = @0", ID);
+            IEnumerable<dynamic> results = this.Query(
+                "SELECT A.Title, A.IntroText, A.Content, A.CreatedAt, A.IsPublished, S.ID AS SectionID " +
+                "FROM Articles A " +
+                "INNER JOIN Sections S ON S.ID = A.SectionID " +
+                "WHERE A.ID = @0",
+                ID);
 
             dynamic article = results.FirstOrDefault();
             if (null == article) return null;
@@ -65,10 +67,11 @@ namespace NietoYostenMvc.Models
 
         public IEnumerable<dynamic> GetArticlesBySectionId(string sectionId)
         {
-            string query = "select A.ID, A.Title, A.IntroText, A.Content, A.CreatedAt, A.IsPublished, U.Email FROM Articles A " +
-                           "inner join Sections S on S.ID = A.SectionID " +
-                           "inner join Users U ON U.ID = A.CreatedBy " +
-                           "where S.ID = @0";
+            string query = "SELECT A.ID, A.Title, A.IntroText, A.Content, A.CreatedAt, A.IsPublished, U.Email FROM Articles A " +
+                           "INNER JOIN Sections S ON S.ID = A.SectionID " +
+                           "INNER JOIN Users U ON U.ID = A.CreatedBy " +
+                           "WHERE S.ID = @0 " +
+                           "ORDER BY A.CreatedAt DESC";
 
             return this.Query(query, sectionId);
         }
