@@ -72,12 +72,15 @@
             <li><a href="~/pictures">Pictures</a></li>
         }
         <li><a href="http://fotki.com/nietoyosten">Fotki</a></li>
-        @if (controller.CurrentUserHasRole("admin"))
+        @if (controller.CurrentUserHasRole("family"))
         {
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li><a href="~/elmah">Elmah</a></li>
+                    @if (controller.CurrentUserHasRole("admin"))
+                    {
+                        <li><a href="~/elmah">Elmah</a></li>    
+                    }
                     <li><a href="~/Article/Index">Artículos</a></li>
                 </ul>
             </li>

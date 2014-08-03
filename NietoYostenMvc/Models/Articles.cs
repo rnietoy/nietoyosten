@@ -54,10 +54,11 @@ namespace NietoYostenMvc.Models
 
         public IEnumerable<dynamic> GetArticlesBySection(string sectionName)
         {
-            string query = "select A.ID, A.Title, A.IntroText, A.Content, A.CreatedAt, U.Email FROM Articles A " +
-                           "inner join Sections S on S.ID = A.SectionID " +
-                           "inner join Users U ON U.ID = A.CreatedBy " +
-                           "where A.IsPublished = 1 and S.Name = @0";
+            string query = "SELECT A.ID, A.Title, A.IntroText, A.Content, A.CreatedAt, U.Email FROM Articles A " +
+                           "INNER JOIN Sections S ON S.ID = A.SectionID " +
+                           "INNER JOIN Users U ON U.ID = A.CreatedBy " +
+                           "WHERE A.IsPublished = 1 AND S.Name = @0 " +
+                           "ORDER BY A.CreatedAt DESC";
 
             return this.Query(query, sectionName);
         }
