@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Mvc;
 using Massive;
@@ -54,15 +55,23 @@ namespace NietoYostenMvc.Models
             };
         }
 
-        public IEnumerable<dynamic> GetArticlesBySection(string sectionName)
+        public IEnumerable<dynamic> GetArticles(string sectionName, int page, int pageSize, out int totalPages)
         {
             string query = "SELECT A.ID, A.Title, A.IntroText, A.Content, A.CreatedAt, U.Email FROM Articles A " +
                            "INNER JOIN Sections S ON S.ID = A.SectionID " +
                            "INNER JOIN Users U ON U.ID = A.CreatedBy " +
-                           "WHERE A.IsPublished = 1 AND S.Name = @0 " +
-                           "ORDER BY A.CreatedAt DESC";
+                           "WHERE A.IsPublished = 1 AND S.Name = @0";
 
-            return this.Query(query, sectionName);
+            dynamic result = this.Paged(
+                sql: query,
+                orderBy: "CreatedAt DESC",
+                primaryKey: "ID",
+                pageSize: pageSize,
+                currentPage: page, 
+                args: sectionName);
+
+            totalPages = result.TotalPages;
+            return result.Items;
         }
 
         public IEnumerable<dynamic> GetArticlesBySectionId(string sectionId)
@@ -75,6 +84,14 @@ namespace NietoYostenMvc.Models
 
             return this.Query(query, sectionId);
         }
+    }
+
+    public class ShowArticlesViewModel
+    {
+        public string SectionName { get; set; }
+        public int TotalPages { get; set; }
+        public int CurrentPage { get; set; }
+        public IEnumerable<dynamic> Articles { get; set; }
     }
 
     public class ArticleIndexViewModel

@@ -11,6 +11,8 @@ namespace NietoYostenMvc.Controllers
 {
     public class HomeController : ApplicationController
     {
+        public const int PageSize = 5;
+
         private Articles _articles;
         public HomeController()
         {
@@ -19,14 +21,31 @@ namespace NietoYostenMvc.Controllers
         public ActionResult Index()
         {
             IEnumerable<dynamic> homePageArticles = _articles.GetHomePageArticles();
-            return View(homePageArticles);
+            return View(new ShowArticlesViewModel
+            {
+                Articles = homePageArticles,
+                CurrentPage = 1,
+                TotalPages = 1,
+                SectionName = "home"
+            });
         }
 
         [RequireLogin]
         public ActionResult ShowSection(string section)
         {
-            IEnumerable<dynamic> articles = _articles.GetArticlesBySection(section);
-            return View("Index", articles);
+            int page = this.GetPage();
+            int totalPages;
+            IEnumerable<dynamic> result = _articles.GetArticles(section, page, HomeController.PageSize, out totalPages);
+
+            ShowArticlesViewModel vm = new ShowArticlesViewModel
+            {
+                Articles = result,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                SectionName = section
+            };
+
+            return View("Index", vm);
         }
 
         [RequireLogin]

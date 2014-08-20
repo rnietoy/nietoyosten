@@ -4,13 +4,31 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@model NietoYostenMvc.Models.ShowArticlesViewModel
+
 <div class="family-pic">
     <p><img src="~/Images/HomepNY.jpg" width="740px" alt="Nieto Yosten Family Picture" /></p>
 </div>
 
 @if (((ApplicationController) ViewContext.Controller).IsLoggedIn)
 {
-    foreach (var article in @Model)
+    if (@Model.TotalPages > 1)
+    {
+        <ul class="pagination">
+            @for (int i = 1; i <= @Model.TotalPages; i++)
+            {
+                if (i == @Model.CurrentPage)
+                {
+                    <li class="active"><a href="~/sections/@Model.SectionName?Page=@i">@i</a></li>
+                }
+                else
+                {
+                    <li><a href="~/sections/@Model.SectionName?Page=@i">@i</a></li>
+                }
+            }
+        </ul>
+    }
+    foreach (var article in @Model.Articles)
     {
         @Home.ArticleIntro(article)
     }

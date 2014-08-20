@@ -36,13 +36,7 @@ namespace NietoYostenMvc.Controllers
         [RequireLogin]
         public ActionResult ShowAlbum(string album)
         {
-            int page;
-
-            // If TryParse fails, it sets page to 0, so we set it to 1 (since there is no zeroth page)
-            if (!int.TryParse(this.Request.QueryString["page"], out page))
-            {
-                page = 1;
-            }
+            var page = this.GetPage();
 
             var picturesPaged = _pictures.Paged(
                 sql: "SELECT P.ID, P.Title, P.FileName, A.FolderName FROM Pictures P " +
