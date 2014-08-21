@@ -82,11 +82,5 @@ namespace NietoYostenMvc.Controllers
 
             return View();
         }
-
-        [RequireLogin]
-        public ActionResult Family()
-        {
-            return View();
-        }
     }
 }

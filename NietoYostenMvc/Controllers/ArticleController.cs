@@ -30,7 +30,7 @@ namespace NietoYostenMvc.Controllers
                 id = "1";   // News section
             }
 
-            string query = "SELECT ID, Name FROM Sections WHERE ParentSectionID IS NOT NULL OR Name = 'News'";
+            string query = "SELECT ID, Name FROM Sections WHERE ParentSectionID IS NOT NULL OR Name = 'News' OR Name = 'Family' ORDER BY ParentSectionID";
             IEnumerable<SelectListItem> sections = _articles.Query(query).
                     Select(x => new SelectListItem {Value = x.ID.ToString(), Text = x.Name });
 

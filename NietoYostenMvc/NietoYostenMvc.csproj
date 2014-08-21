@@ -202,9 +202,6 @@
     <Content Include="App_Code\HTML.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Home\Family.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Account\ApprovalRequests.cshtml" />
   </ItemGroup>
   <ItemGroup>

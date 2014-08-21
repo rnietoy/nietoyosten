@@ -14,9 +14,11 @@ namespace NietoYostenMvc.Models
 
         public IEnumerable<dynamic> GetHomePageArticles()
         {
-            string query = "select A.Title, A.IntroText, A.Content, A.CreatedAt, U.Email from Articles A " +
-                           "inner join HomePageArticles H on H.ArticleID = A.ID " +
-                           "inner join Users U ON U.ID = A.CreatedBy";
+            string query = "SELECT TOP 5 A.Title, A.IntroText, A.Content, A.CreatedAt, U.Email FROM Articles A " +
+                           "INNER JOIN Users U ON U.ID = A.CreatedBy " +
+                           "INNER JOIN Sections S ON S.ID = A.SectionID " +
+                           "WHERE S.Name <> 'Family' " +
+                           "ORDER BY A.CreatedAt DESC";
 
             return this.Query(query);
         }
