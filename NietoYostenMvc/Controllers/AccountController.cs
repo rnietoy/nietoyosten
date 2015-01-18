@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
+using CodeBits;
 using Elmah;
 using Massive;
 using NietoYostenMvc.Code;
@@ -90,6 +91,57 @@ namespace NietoYostenMvc.Controllers
         {
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Home");
+        }
+
+        public ActionResult PasswordReset()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult PasswordReset(string email)
+        {
+            // First check that user exists in our database is approved
+            var user = _users.Single(where: "Email = @0", args: email);
+            if (null == user || !user.IsApproved)
+            {
+                ViewBag.AlertMessage = "Este usuario no existe en el sitio.";
+                ViewBag.AlertClass = "alert-danger";
+                return View();
+            }
+
+            // Generate new password
+            string newPassword = PasswordGenerator.Generate(12);
+
+            // Set new password
+            _users.SetPassword(user.ID, newPassword);
+
+            // Send out email with new password
+            var message = new MailMessage();
+            var fromAddress = new MailAddress("noreply@nietoyosten.com", "NietoYosten");
+            message.From = fromAddress;
+            message.To.Add(email);
+
+            message.Subject = "Nueva contraseña para nietoyosten.com";
+            message.Body = string.Format("Estimado usuario,\n\n" +
+                                         "Le enviamos por medio de este correo su nueva contraseña:\n\n" +
+                                         "Nombre de usuario: {0}\n" +
+                                         "Contraseña: {1}\n\n" +
+                                         "Dirígase a http://nietoyosten.com/Account/Login para ingresar al sitio.",
+                                         email, newPassword);
+
+            // Set encoding to ISO-8859-1 since we are using non-English characters. If we don't
+            // do this, SmtpClient will incorrectly encode the message in Base64.
+            message.SubjectEncoding = Encoding.GetEncoding("ISO-8859-1");
+            message.BodyEncoding = Encoding.GetEncoding("ISO-8859-1");
+
+            var smtpClient = new SmtpClient();
+            smtpClient.Send(message);
+
+            ViewBag.AlertMessage = "Hemos enviado su nueva contraseña a su dirección de correo.";
+            ViewBag.AlertClass = "alert-info";
+
+            return View();
         }
 
         /// <summary>

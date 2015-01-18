@@ -120,6 +120,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeBits\PasswordGenerator.cs" />
     <Compile Include="Code\ActionFilters.cs" />
     <Compile Include="Code\ControllerUtil.cs" />
     <Compile Include="Code\Massive.cs" />
@@ -216,6 +217,7 @@
     <Content Include="Views\Pictures\ShowPicture.cshtml" />
     <Content Include="Views\Pictures\Upload.cshtml" />
     <Content Include="Views\Pictures\AddAlbum.cshtml" />
+    <Content Include="Views\Account\PasswordReset.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
