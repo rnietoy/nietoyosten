@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Specialized;
+using System.Configuration;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
+using ImageResizer.Configuration;
+using ImageResizer.Plugins.AzureReader2;
 
 namespace NietoYostenMvc
 {
@@ -20,6 +20,12 @@ namespace NietoYostenMvc
             Elmah.Mvc.Bootstrap.Initialize();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            // Set AzureReader2 plugin
+            var nvc = new NameValueCollection();
+            nvc["endpoint"] = "https://nietoyosten.blob.core.windows.net";
+            nvc["connectionString"] = "DefaultEndpointsProtocol=https;AccountName=nietoyosten;AccountKey=" + ConfigurationManager.AppSettings["STORAGE_ACCOUNT_KEY"];
+            new AzureReader2Plugin(nvc).Install(Config.Current);
         }
     }
 }
