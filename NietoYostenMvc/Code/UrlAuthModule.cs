@@ -25,6 +25,7 @@ namespace NietoYostenMvc.Code
 
             // Restrict access to private resources (i.e. images)
             if (context.Request.Path.StartsWith("/content/pictures", StringComparison.InvariantCultureIgnoreCase) ||
+                context.Request.Path.StartsWith("/azure/pictures", StringComparison.InvariantCultureIgnoreCase) ||
                 context.Request.Path.StartsWith("/images/caras", StringComparison.InvariantCultureIgnoreCase))
             {
                 context.Response.Redirect("~/account/login");
