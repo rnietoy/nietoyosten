@@ -135,8 +135,7 @@ namespace NietoYostenMvc.Controllers
             message.SubjectEncoding = Encoding.GetEncoding("ISO-8859-1");
             message.BodyEncoding = Encoding.GetEncoding("ISO-8859-1");
 
-            var smtpClient = new SmtpClient();
-            smtpClient.Send(message);
+            NyUtil.SendMail(message);
 
             ViewBag.AlertMessage = "Hemos enviado su nueva contraseña a su dirección de correo.";
             ViewBag.AlertClass = "alert-info";
@@ -251,8 +250,7 @@ namespace NietoYostenMvc.Controllers
                                          "to approve or reject this user.\n\n" +
                                          "The reason given by the user is:\n{1}", userEmail, reason);
 
-            var smtpClient = new SmtpClient();
-            smtpClient.Send(message);
+            NyUtil.SendMail(message);
         }
 
         [RequireRole(Role = "admin")]
