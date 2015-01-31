@@ -30,7 +30,7 @@ namespace NietoYostenMvc.Controllers
         [RequireLogin]
         public ActionResult Index()
         {
-            var model = _albums.All();
+            var model = _albums.All(orderBy: "CreatedAt desc");
             return View(model);
         }
 
@@ -40,12 +40,13 @@ namespace NietoYostenMvc.Controllers
             var page = this.GetPage();
 
             var picturesPaged = _pictures.Paged(
-                sql: "SELECT P.ID, P.Title, P.FileName, A.FolderName FROM Pictures P " +
+                sql: "SELECT P.ID, P.Title, P.FileName, A.FolderName, P.UploadedAt FROM Pictures P " +
                      "INNER JOIN Albums A ON A.ID = P.AlbumID " +
                      "WHERE A.FolderName = @0",
                 primaryKey: "ID",
                 currentPage: page,
                 pageSize: AlbumPageSize,
+                orderBy: "UploadedAt",
                 args: album);
 
             var pictures = picturesPaged.Items;
