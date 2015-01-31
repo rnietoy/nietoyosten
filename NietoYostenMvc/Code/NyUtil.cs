@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Web;
+using Microsoft.WindowsAzure.Storage;
 
 namespace NietoYostenMvc.Code
 {
@@ -19,6 +17,17 @@ namespace NietoYostenMvc.Code
                     smtpClient.Credentials = new NetworkCredential("nietoyosten", ConfigurationManager.AppSettings["mailer_pwd"]);
                 }
                 smtpClient.Send(message);
+            }
+        }
+
+        public static CloudStorageAccount StorageAccount
+        {
+            get
+            {
+                const string account = "nietoyosten";
+                string key = ConfigurationManager.AppSettings["STORAGE_ACCOUNT_KEY"];
+                string connectionString = String.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", account, key);
+                return CloudStorageAccount.Parse(connectionString);
             }
         }
     }

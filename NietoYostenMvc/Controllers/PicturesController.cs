@@ -4,10 +4,11 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Web;
 using System.Web.Mvc;
 using Elmah;
 using Massive;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using NietoYostenMvc.Code;
 using NietoYostenMvc.Models;
 
@@ -228,13 +229,11 @@ namespace NietoYostenMvc.Controllers
                 return HttpNotFound();
             }
 
-            string originalPicFile = Path.Combine(
-                HttpContext.Server.MapPath("~/content/pictures/original/" + folderName),
-                fileName);
+            string azureFileName = string.Format("{0}/{1}", folderName, fileName);
 
             try
             {
-                System.IO.File.Copy(GetTempFilePath(fileName), originalPicFile);
+                UploadToAzure(GetTempFilePath(fileName), azureFileName);
             }
             catch (IOException)
             {
@@ -285,6 +284,20 @@ namespace NietoYostenMvc.Controllers
                 return View();
             }
             return RedirectToAction("Index");
+        }
+
+        private void UploadToAzure(string sourceFileName, string destFileName)
+        {
+            CloudStorageAccount storageAccount = NyUtil.StorageAccount;
+            
+            // Create the blob client and reference the container
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+            CloudBlobContainer container = blobClient.GetContainerReference("pictures");
+
+            // Upload image to Blob Storage
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(destFileName);
+            blockBlob.Properties.ContentType = "image/jpeg";
+            blockBlob.UploadFromFile(sourceFileName, FileMode.Open);
         }
     }
 }
