@@ -280,8 +280,7 @@ namespace NietoYostenMvc.Controllers
             {
                 ErrorSignal.FromCurrentContext().Raise(ex);
 
-                ViewBag.AlertMessage = "Ocurrió un error al crear el álbum.";
-                ViewBag.AlertClass = "alert-danger";
+                this.SetAlertMessage("Ocurrió un error al crear el álbum.", AlertClass.AlertDanger);
                 return View();
             }
             return RedirectToAction("Index");

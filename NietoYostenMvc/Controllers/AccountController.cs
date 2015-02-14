@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+using System.Dynamic;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
-using CodeBits;
 using Elmah;
 using Massive;
 using NietoYostenMvc.Code;
@@ -19,17 +16,17 @@ namespace NietoYostenMvc.Controllers
 {
     public class AccountController : ApplicationController
     {
-        private Users _users;
+        private readonly Users _users;
+        private readonly PasswordResetTokens _pwdResetTokens;
 
         public AccountController()
         {
             _users = new Users();
+            _pwdResetTokens = new PasswordResetTokens();
         }
 
         public ActionResult Login()
         {
-            ViewBag.AlertMessage = TempData["AlertMessage"];
-            ViewBag.AlertClass = TempData["AlertClass"];
             ViewBag.ReturnUrl = TempData["ReturnUrl"];
             return View();
         }
@@ -53,32 +50,28 @@ namespace NietoYostenMvc.Controllers
             // Check if user exists
             if (null == user)
             {
-                ViewBag.AlertMessage = "Este usuario no existe.";
-                ViewBag.AlertClass = "alert-danger";
+                this.SetAlertMessage("Este usuario no existe.", AlertClass.AlertDanger);
                 return View();
             }
 
             // Regular credentials check
             if (null != user.HashedPassword && !Crypto.VerifyHashedPassword(user.HashedPassword, password))
             {
-                ViewBag.AlertMessage = "El usuario y/o la contraseña no son correctos.";
-                ViewBag.AlertClass = "alert-danger";
+                this.SetAlertMessage("El usuario y/o la contraseña no son correctos.", AlertClass.AlertDanger);
                 return View();
             }
 
             // Check credentials against old aspnet membership password
             if (null == user.HashedPassword && !AspNetMembershipLogin(user, password))
             {
-                ViewBag.AlertMessage = "El usuario y/o la contraseña no son correctos.";
-                ViewBag.AlertClass = "alert-danger";
+                this.SetAlertMessage("El usuario y/o la contraseña no son correctos.", AlertClass.AlertDanger);
                 return View();
             }
 
             // Check if user is approved
             if (!user.IsApproved)
             {
-                ViewBag.AlertMessage = "Este usuario no ha sido aprovado aún.";
-                ViewBag.AlertClass = "alert-danger";
+                this.SetAlertMessage("Este usuario no ha sido aprovado aún.", AlertClass.AlertDanger);
                 return View();
             }
 
@@ -93,28 +86,23 @@ namespace NietoYostenMvc.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public ActionResult PasswordReset()
+        public ActionResult RecoverPassword()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult PasswordReset(string email)
+        public ActionResult RecoverPassword(string email)
         {
             // First check that user exists in our database is approved
             var user = _users.Single(where: "Email = @0", args: email);
             if (null == user || !user.IsApproved)
             {
-                ViewBag.AlertMessage = "Este usuario no existe en el sitio.";
-                ViewBag.AlertClass = "alert-danger";
+                this.SetAlertMessage("Este usuario no existe en el sitio.", AlertClass.AlertDanger);
                 return View();
             }
 
-            // Generate new password
-            string newPassword = PasswordGenerator.Generate(12);
-
-            // Set new password
-            _users.SetPassword(user.ID, newPassword);
+            string token = _pwdResetTokens.AddToken(user.ID);
 
             // Send out email with new password
             var message = new MailMessage();
@@ -122,13 +110,15 @@ namespace NietoYostenMvc.Controllers
             message.From = fromAddress;
             message.To.Add(email);
 
-            message.Subject = "Nueva contraseña para nietoyosten.com";
-            message.Body = string.Format("Estimado usuario,\n\n" +
-                                         "Le enviamos por medio de este correo su nueva contraseña:\n\n" +
-                                         "Nombre de usuario: {0}\n" +
-                                         "Contraseña: {1}\n\n" +
-                                         "Dirígase a http://nietoyosten.com/Account/Login para ingresar al sitio.",
-                                         email, newPassword);
+            message.Subject = "Password reset for nietoyosten.com";
+            message.Body = string.Format("Dear user,\n\n" +
+                                         "A password reset from the nietoyosten.com website has been requested for this email address. " +
+                                         "Please click on the following link to reset your password: \n\n" +
+                                         "http://nietoyosten.com/Account/ResetPassword?token={0}\n\n" +
+                                         "If you did not request a password reset, please ignore this message.\n\n" +
+                                         "Cheers,\n" +
+                                         "nietoyosten.com webmaster.\n",
+                                         token);
 
             // Set encoding to ISO-8859-1 since we are using non-English characters. If we don't
             // do this, SmtpClient will incorrectly encode the message in Base64.
@@ -137,10 +127,8 @@ namespace NietoYostenMvc.Controllers
 
             NyUtil.SendMail(message);
 
-            ViewBag.AlertMessage = "Hemos enviado su nueva contraseña a su dirección de correo.";
-            ViewBag.AlertClass = "alert-info";
-
-            return View();
+            this.SetAlertMessage("We have sent instructions to your email on how to reset your password.", AlertClass.AlertInfo);
+            return RedirectToAction("Index", "Home");
         }
 
         /// <summary>
@@ -208,23 +196,15 @@ namespace NietoYostenMvc.Controllers
                 {
                     ErrorSignal.FromCurrentContext().Raise(ex);
 
-                    ViewBag.AlertMessage = "Ocurrió un error al solicitar la aprovación del usuario.";
-                    ViewBag.AlertClass = "alert-danger";
+                    this.SetAlertMessage("Ocurrió un error al solicitar la aprovación del usuario.", AlertClass.AlertDanger);
                     return View();
                 }
 
-                return RedirectToAction("RegistrationDone", "Account");
+                NyUtil.SetAlertMessage(this, result.Message, AlertClass.AlertSuccess);
+                return RedirectToAction("Index", "Home");
             }
-            else
-            {
-                ViewBag.AlertMessage = "Ocurrió un error al registrar el usuario.";
-                ViewBag.AlertClass = "alert-danger";
-                return View();
-            }
-        }
 
-        public ActionResult RegistrationDone()
-        {
+            NyUtil.SetAlertMessage(this, result.Message, AlertClass.AlertDanger);
             return View();
         }
 
@@ -259,8 +239,6 @@ namespace NietoYostenMvc.Controllers
             IEnumerable<dynamic> requests = _users.Query("SELECT U.ID, U.Email, AR.Reason FROM Users U " +
                          "INNER JOIN ApprovalRequests AR ON U.ID = AR.UserID");
 
-            ViewBag.AlertMessage = TempData["AlertMessage"];
-            ViewBag.AlertClass = TempData["AlertClass"];
             return View(requests);
         }
 
@@ -274,7 +252,7 @@ namespace NietoYostenMvc.Controllers
             var db = new DynamicModel("NietoYostenDb", "ApprovalRequests");
             db.Delete(where: "UserID = @0", args: id);
 
-            TempData["AlertMessage"] = string.Format("El usuario {0} ha sido approvado.", user.Email);
+            NyUtil.SetAlertMessage(this, string.Format("El usuario {0} ha sido approvado.", user.Email));
             return RedirectToAction("ApprovalRequests", "Account");
         }
 
@@ -287,9 +265,83 @@ namespace NietoYostenMvc.Controllers
             db.Delete(where: "UserID = @0", args: id);
             _users.Delete(id);
 
-            TempData["AlertMessage"] = string.Format("El usuario {0} ha sido rechazado.", user.Email);
-            TempData["AlertClass"] = "alert-info";
+            NyUtil.SetAlertMessage(this, string.Format("El usuario {0} ha sido rechazado.", user.Email), AlertClass.AlertInfo);
             return RedirectToAction("ApprovalRequests", "Account");
+        }
+
+        /// <summary>
+        /// Reset a user's password
+        /// </summary>
+        /// <param name="id">ID of user to reset password for</param>
+        /// <returns></returns>
+        public ActionResult ResetPassword()
+        {
+            string token = (HttpContext.Request).QueryString.Get("token");
+
+            int userId;
+            if (!ValidatePasswordResetToken(token, out userId))
+            {
+                this.SetAlertMessage("The password reset link is not valid. Please request another password reset.", AlertClass.AlertDanger);
+                return RedirectToAction("RecoverPassword", "Account");
+            }
+
+            dynamic model = new ExpandoObject();
+            model.UserID = userId;
+            model.Token = token;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult ResetPassword(string token, string password, string confirm)
+        {
+            int userId;
+            if (!ValidatePasswordResetToken(token, out userId))
+            {
+                this.SetAlertMessage("Could not validate password reset link while trying to reset password. Please request another password reset.", AlertClass.AlertDanger);
+                return RedirectToAction("RecoverPassword", "Account");
+            }
+
+            dynamic result = _users.CheckPasswordStrength(password, confirm);
+            if (!result.Success)
+            {
+                NyUtil.SetAlertMessage(this, result.Message, AlertClass.AlertDanger);
+                return View();
+            }
+
+            _users.SetPassword(userId, password);
+
+            // Delete the token(s) for this user from the DB so it can no longer be used again
+            _pwdResetTokens.Delete(where: "UserID = " + userId);
+
+            this.SetAlertMessage("Your password has been updated. Please log in with your new password.", AlertClass.AlertInfo);
+            return RedirectToAction("Login", "Account");
+        }
+
+        private bool ValidatePasswordResetToken(string token, out int userId)
+        {
+            userId = 0;
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return false;
+            }
+
+            dynamic tokenEntry = _pwdResetTokens.Single(where: string.Format("HashedToken='{0}'", Crypto.Hash(token)));
+            if (null == tokenEntry)
+            {
+                return false;
+            }
+
+            userId = tokenEntry.UserID;
+
+            // Return false if all matching tokens are expired
+            if ((DateTime.UtcNow - tokenEntry.CreatedAt) > TimeSpan.FromMinutes(60))
+            {
+                return false;
+            }
+            
+            return true;
         }
     }
 }

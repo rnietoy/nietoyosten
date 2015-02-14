@@ -5,6 +5,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Web;
 using System.Web.Helpers;
+using Elmah;
 using Massive;
 
 namespace NietoYostenMvc.Models
@@ -31,27 +32,22 @@ namespace NietoYostenMvc.Models
                 return result;
             }
 
-            if (password.Length < 6)
+            dynamic pwdResult = CheckPasswordStrength(password, confirm);
+            if (!pwdResult.Success)
             {
-                result.Message = "Password should be longer than 6 characters.";
-                return result;
-            }
-
-            if (!password.Equals(confirm))
-            {
-                result.Message = "Passwords do not match.";
-                return result;
+                return pwdResult;
             }
 
             try
             {
                 result.User = this.Insert(new { Email = email, HashedPassword = Crypto.HashPassword(password) });
                 result.Success = true;
-                result.Message = "Thanks for signing up!";
+                result.Message = "Thanks for signing up! We'll send you an email once we approve your account.";
             }
             catch (SqlException ex)
             {
                 result.Message = "This email already exists in our system.";
+                ErrorSignal.FromCurrentContext().Raise(ex);
             }
 
             return result;
@@ -93,6 +89,27 @@ namespace NietoYostenMvc.Models
         {
             var result = this.All(columns: "Email", where: "Role=@0", args: role);
             return result.Select(x => (string)x.Email);
+        }
+
+        public dynamic CheckPasswordStrength(string password, string confirm)
+        {
+            dynamic result = new ExpandoObject();
+            result.Success = false;
+
+            if (password.Length < 6)
+            {
+                result.Message = "Password should be longer than 6 characters.";
+                return result;
+            }
+
+            if (!password.Equals(confirm))
+            {
+                result.Message = "Passwords do not match.";
+                return result;
+            }
+
+            result.Success = true;
+            return result;
         }
     }
 }

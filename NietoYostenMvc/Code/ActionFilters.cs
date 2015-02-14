@@ -21,8 +21,7 @@ namespace NietoYostenMvc.Code
             }
             else if (!controller.CurrentUserHasRole(Role))
             {
-                controller.TempData["AlertMessage"] = "Este usuario no tiene accesso a esta sección.";
-                controller.TempData["AlertClass"] = "alert-danger";
+                controller.SetAlertMessage("Este usuario no tiene accesso a esta sección.", AlertClass.AlertDanger);
                 controller.TempData["ReturnUrl"] = filterContext.HttpContext.Request.RawUrl;
                 filterContext.Result = new RedirectResult("~/account/login");
             }

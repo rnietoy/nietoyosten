@@ -49,7 +49,7 @@
         </div>
 
         <div class="container body-content">
-            @HTML.AlertMessage(ViewBag.AlertMessage, ViewBag.AlertClass)    
+            @HTML.AlertMessage(TempData["AlertMessage"] as string, TempData["AlertClass"] as string)
             @RenderBody()
         
             <!-- Copyright row -->

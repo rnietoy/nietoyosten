@@ -13,6 +13,6 @@
     <!-- Main page -->
     @foreach (var album in @Model)
     {
-        <p><a href="~/pictures/album/@album.FolderName">@album.Title</a></p>
+        <p><a href="~/pictures/album/@album.FolderName">@string.Format("{0:d} - {1}", album.CreatedAt, album.Title)</a></p>
     }
 </div>

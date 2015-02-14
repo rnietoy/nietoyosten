@@ -83,8 +83,7 @@ namespace NietoYostenMvc.Controllers
             {
                 ErrorSignal.FromCurrentContext().Raise(ex);
 
-                ViewBag.AlertMessage = "Ocurrió un error al guardar el artículo.";
-                ViewBag.AlertClass = "alert-danger";
+                this.SetAlertMessage("Ocurrió un error al guardar el artículo.", AlertClass.AlertDanger);
                 return View(vm);
             }
 
@@ -132,8 +131,7 @@ namespace NietoYostenMvc.Controllers
             {
                 ErrorSignal.FromCurrentContext().Raise(ex);
 
-                ViewBag.AlertMessage = "Ocurrió un error al agregar el artículo.";
-                ViewBag.AlertClass = "alert-danger";
+                this.SetAlertMessage("Ocurrió un error al agregar el artículo.", AlertClass.AlertDanger);
 
                 vm.Action = "Add";
                 vm.PageTitle = "Agregar artículo";
