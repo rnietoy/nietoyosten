@@ -33,7 +33,7 @@ namespace NietoYostenMvc.Controllers
         [RequireLogin]
         public ActionResult ShowSection(string section)
         {
-            int page = this.GetPage();
+            int page = this.GetCurrentPage();
             int totalPages;
             IEnumerable<dynamic> result = _articles.GetArticles(section, page, HomeController.PageSize, out totalPages);
 

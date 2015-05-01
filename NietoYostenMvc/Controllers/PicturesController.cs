@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Web.Mvc;
 using Elmah;
-using Massive;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using NietoYostenMvc.Code;
 using NietoYostenMvc.Models;
 
@@ -16,68 +11,35 @@ namespace NietoYostenMvc.Controllers
 {
     public class PicturesController : ApplicationController
     {
-        public const int AlbumPageSize = 20;
-
-        private Pictures _pictures;
-        private DynamicModel _albums;
+        private readonly PicturesModel picturesModel;
+        private readonly AlbumsModel albumsModel;
+        private readonly ImageStorage imageStorage;
 
         public PicturesController()
         {
-            _pictures = new Pictures();
-            _albums = new DynamicModel("NietoYostenDb", "Albums");
+            this.picturesModel = PicturesModel.GetInstance();
+            this.albumsModel = AlbumsModel.GetInstance();
+            this.imageStorage = ImageStorage.GetInstance();
         }
 
         [RequireLogin]
         public ActionResult Index()
         {
-            var model = _albums.All(orderBy: "CreatedAt desc");
+            var model = albumsModel.GetAll();
             return View(model);
         }
 
         [RequireLogin]
         public ActionResult ShowAlbum(string album)
         {
-            var page = this.GetPage();
-
-            var picturesPaged = _pictures.Paged(
-                sql: "SELECT P.ID, P.Title, P.FileName, A.FolderName, P.UploadedAt FROM Pictures P " +
-                     "INNER JOIN Albums A ON A.ID = P.AlbumID " +
-                     "WHERE A.FolderName = @0",
-                primaryKey: "ID",
-                currentPage: page,
-                pageSize: AlbumPageSize,
-                orderBy: "UploadedAt",
-                args: album);
-
-            var pictures = picturesPaged.Items;
-
-            ViewBag.Title = _pictures.Scalar("SELECT Title FROM Albums WHERE FolderName = @0", album);
-
-            var thumbArray = new List<List<dynamic>>();
-            int colPos = 0;
-            List<dynamic> currentRow = new List<dynamic>();
-
-            foreach (var picture in pictures)
-            {
-                currentRow.Add(picture);
-                colPos++;
-                if (colPos > 3)
-                {
-                    thumbArray.Add(currentRow);
-                    colPos = 0;
-                    currentRow = new List<dynamic>();
-                }
-            }
-            if (currentRow.Any())
-            {
-                thumbArray.Add(currentRow);    
-            }
+            int currentPage = this.GetCurrentPage();
+            PageResult pageResult = this.picturesModel.GetPage(album, currentPage);
 
             dynamic model = new ExpandoObject();
             model.FolderName = album;   // Album folder name
-            model.ThumbArray = thumbArray;
-            model.TotalPages = picturesPaged.TotalPages;
-            model.CurrentPage = page;
+            model.ThumbArray = NyUtil.ConvertListToTable<dynamic>(pageResult.Items, 4);
+            model.TotalPages = pageResult.TotalPages;
+            model.CurrentPage = currentPage;
 
             return View((object)model);
         }
@@ -85,48 +47,14 @@ namespace NietoYostenMvc.Controllers
         [RequireLogin]
         public ActionResult ShowPicture(int pictureid)
         {
-            dynamic model = new ExpandoObject();
-            int albumId = (int)_albums.Scalar(
-                "SELECT AlbumID FROM Pictures WHERE ID = @0", pictureid);
+            dynamic picture = this.picturesModel.Get(pictureid);
 
-            // Get picture details, including row number (to be used to calculate the album page)
-            var query = _pictures.Query(
-                "SELECT * FROM " +
-                "  (SELECT ROW_NUMBER() OVER (ORDER BY P.ID) AS Row, P.ID, P.Title, P.FileName, A.FolderName " +
-                "  FROM Pictures P" +
-                "  INNER JOIN Albums A ON A.ID = P.AlbumID" +
-                "  WHERE A.id = @0" +
-                "  ) T " +
-                "WHERE ID = @1",
-                albumId, pictureid);
-
-            model.Picture = query.FirstOrDefault();
-
-            if (null == model.Picture)
+            if (picture == null)
             {
                 return HttpNotFound();
             }
 
-            // Get ID of previous and next picture in album
-            model.PreviousID = _pictures.Scalar(
-                "SELECT TOP 1 P.ID FROM Pictures P " +
-                "INNER JOIN Albums A ON A.ID = P.AlbumID " +
-                "WHERE A.ID = @0 " +
-                "AND P.ID < @1 ORDER BY P.ID DESC",
-                albumId, pictureid);
-
-            model.NextID = _pictures.Scalar(
-                "SELECT TOP 1 P.ID FROM Pictures P " +
-                "INNER JOIN Albums A ON A.ID = P.AlbumID " +
-                "WHERE A.ID = @0 " +
-                "AND P.ID > @1 ORDER BY P.ID",
-                albumId, pictureid);
-
-            // Calculate page of requested picture in album
-            long page = ((model.Picture.Row - 1)/AlbumPageSize) + 1;
-            model.AlbumPage = page;
-
-            return View((object)model);
+            return View((object)picture);
         }
 
         /// <summary>
@@ -148,7 +76,7 @@ namespace NietoYostenMvc.Controllers
             public string errorMsg = null;
         }
 
-        public string GetTempFilePath(string fileName)
+        private string GetTempFilePath(string fileName)
         {
             return Path.Combine(
                 HttpContext.Server.MapPath("~/content/pictures/upload"),
@@ -205,7 +133,7 @@ namespace NietoYostenMvc.Controllers
                     }
                     break;
                 }
-                catch (System.IO.IOException ex)
+                catch (IOException ex)
                 {
                     ErrorSignal.FromCurrentContext().Raise(ex);
                     Thread.Sleep(200);
@@ -230,26 +158,14 @@ namespace NietoYostenMvc.Controllers
                 return HttpNotFound();
             }
 
-            string azureFileName = string.Format("{0}/{1}", folderName, fileName);
-
-            try
+            dynamic addResult = picturesModel.Add(folderName, fileName, CurrentUserID);
+            dynamic picture = picturesModel.Get(addResult.ID);
+            this.imageStorage.Upload(this.GetTempFilePath(fileName), picture.FullName);
+            
+            if (System.IO.File.Exists(GetTempFilePath(fileName)))
             {
-                UploadToAzure(GetTempFilePath(fileName), azureFileName);
+                System.IO.File.Delete(GetTempFilePath(fileName));
             }
-            catch (IOException)
-            {
-                return Json("Error: Un archivo con este nombre ya existe en este álbum.");
-            }
-            finally
-            {
-                if (System.IO.File.Exists(GetTempFilePath(fileName)))
-                {
-                    System.IO.File.Delete(GetTempFilePath(fileName));    
-                }
-            }
-
-            // Add picture to database
-            _pictures.Add(folderName, fileName, CurrentUserID);
 
             return Json("La imagen se subió con éxito");
         }
@@ -262,42 +178,44 @@ namespace NietoYostenMvc.Controllers
 
         [HttpPost]
         [RequireRole(Role = "family")]
+        [HandleUserFriendlyError(View = "AddAlbum")]
         public ActionResult AddAlbum(string title, string folder)
         {
-            try
-            {
-                Directory.CreateDirectory(HttpContext.Server.MapPath("~/content/pictures/original/" + folder));
-
-                _albums.Insert(new
-                {
-                    Title = title,
-                    FolderName = folder,
-                    CreatedBy = CurrentUserID,
-                    ModifiedBy = CurrentUserID
-                });
-            }
-            catch (Exception ex)
-            {
-                ErrorSignal.FromCurrentContext().Raise(ex);
-
-                this.SetAlertMessage("Ocurrió un error al crear el álbum.", AlertClass.AlertDanger);
-                return View();
-            }
+            albumsModel.Add(title, folder, CurrentUserID);
             return RedirectToAction("Index");
         }
 
-        private void UploadToAzure(string sourceFileName, string destFileName)
-        {
-            CloudStorageAccount storageAccount = NyUtil.StorageAccount;
-            
-            // Create the blob client and reference the container
-            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-            CloudBlobContainer container = blobClient.GetContainerReference("pictures");
+        //private void DeletePicture(int pictureId)
+        //{
+        //    dynamic picture = picturesModel.Single(pictureId);
+        //    dynamic album = albumsModel.Single(picture.AlbumID);
 
-            // Upload image to Blob Storage
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(destFileName);
-            blockBlob.Properties.ContentType = "image/jpeg";
-            blockBlob.UploadFromFile(sourceFileName, FileMode.Open);
-        }
+        //    // Delete from database
+        //    picturesModel.Delete(pictureId);
+
+        //    // Delete from Azure blob storage
+        //    ImageStorage.Delete(string.Format("{0},{1}", album.FolderName, picture.FileName));
+        //}
+
+        //[HttpPost]
+        //[RequireRole(Role = "family")]
+        //public ActionResult DeletePictures(string pictureIds)
+        //{
+        //    if (!Request.IsAjaxRequest())
+        //    {
+        //        return HttpNotFound();
+        //    }
+
+        //    // Validate pictureIds
+        //    IEnumerable<int> ids = pictureIds.Split(',').Select(int.Parse);
+
+        //    // Foreach picture id, delete it.
+        //    foreach (int pictureId in ids)
+        //    {
+        //        this.DeletePicture(pictureId);
+        //    }
+
+        //    return RedirectToAction("Index");
+        //}
     }
 }

@@ -11,15 +11,15 @@
             <span class="glyphicon glyphicon-arrow-left" style="font-size: 2em"></span>
         </button>
         &nbsp;&nbsp;&nbsp;
-        <a href="~/pictures/album/@Model.Picture.FolderName?page=@Model.AlbumPage">Regresar al album</a>
+        <a href="~/pictures/album/@Model.FolderName?page=@Model.AlbumPage">Regresar al album</a>
         &nbsp;&nbsp;&nbsp;
         <button type="button" class="btn btn-default" id="@Model.NextID" @nextButtonDisabled>
             <span class="glyphicon glyphicon-arrow-right" style="font-size: 2em"></span>
         </button>
     </p>
-    <p><img src="~/azure/pictures/@Model.Picture.FolderName/@Model.Picture.FileName?w=640&h=640&mode=max"/></p>
-    <p>@Model.Picture.Title</p>
-    <p><a href="~/azure/pictures/@Model.Picture.FolderName/@Model.Picture.FileName?cache=always">Descargar original</a></p>
+    <p><img src="~/azure/pictures/@Model.FolderName/@Model.FileName?w=640&h=640&mode=max"/></p>
+    <p>@Model.Title</p>
+    <p><a href="~/azure/pictures/@Model.FolderName/@Model.FileName?cache=always">Descargar original</a></p>
 </div>
 
 <script type="text/javascript">

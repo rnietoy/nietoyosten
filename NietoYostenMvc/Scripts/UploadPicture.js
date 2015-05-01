@@ -19,6 +19,7 @@ function getParameterByName(name) {
 }
 
 function getAlbumFolder() {
+    // Get album folder name from the URL
     return window.location.pathname.split('/')[3];
 }
 

@@ -1,4 +1,6 @@
-﻿@helper ErrorMessage(string message)
+﻿@using System.Web.Mvc
+@using NietoYostenMvc.Code
+@helper ErrorMessage(string message)
 { 
     if (!string.IsNullOrWhiteSpace(message))
     {

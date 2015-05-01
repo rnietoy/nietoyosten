@@ -3,7 +3,7 @@
 param ([string]$ServerInstance,
         [string]$Database,
         [System.Management.Automation.PSCredential]$Credential,
-        [string]$Version)
+        [string]$Version = "latest")
 
 . .\DbVersioningLib.ps1
 

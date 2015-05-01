@@ -8,7 +8,7 @@ namespace NietoYostenMvc.Code
 {
     public static class ControllerUtil
     {
-        public static int GetPage(this Controller controller)
+        public static int GetCurrentPage(this Controller controller)
         {
             int page;
 

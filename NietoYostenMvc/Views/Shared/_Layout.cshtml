@@ -48,17 +48,17 @@
             </div>
         </div>
 
-        <div class="container body-content">
-            @HTML.AlertMessage(TempData["AlertMessage"] as string, TempData["AlertClass"] as string)
-            @RenderBody()
-        
-            <!-- Copyright row -->
-            <div class="row">
-                <hr />
-                <footer>
-                    <p>&copy; 2015 - Nieto Yosten Website</p>
-                </footer>    
-            </div>
+    <div class="container body-content">
+        @HTML.AlertMessage(TempData["AlertMessage"] as string, TempData["AlertClass"] as string)
+        @RenderBody()
+
+        <!-- Copyright row -->
+        <div class="row">
+            <hr/>
+            <footer>
+                <p>&copy; 2015 - Nieto Yosten Website</p>
+            </footer>
         </div>
+    </div>
     </body>
 </html>
