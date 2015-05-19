@@ -22,4 +22,6 @@ NietoYostenMvc/Content/pictures/
 ckeditor/
 AppSettingsSecrets.config
 imagecache/
+*.swp
 *.*~
+
