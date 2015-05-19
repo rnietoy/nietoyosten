@@ -185,37 +185,25 @@ namespace NietoYostenMvc.Controllers
             return RedirectToAction("Index");
         }
 
-        //private void DeletePicture(int pictureId)
-        //{
-        //    dynamic picture = picturesModel.Single(pictureId);
-        //    dynamic album = albumsModel.Single(picture.AlbumID);
+        [HttpPost]
+        [RequireRole(Role = "family")]
+        public ActionResult DeletePictures(string[] pictureIds)
+        {
+            if (!Request.IsAjaxRequest())
+            {
+                return HttpNotFound();
+            }
 
-        //    // Delete from database
-        //    picturesModel.Delete(pictureId);
+            // Foreach picture id, delete it from storage and the database
+            foreach (string pictureId in pictureIds)
+            {
+                int id = int.Parse(pictureId);
+                dynamic picture = this.picturesModel.Get(id);
+                this.imageStorage.Delete(picture.FullName);
+                this.picturesModel.Delete(id);
+            }
 
-        //    // Delete from Azure blob storage
-        //    ImageStorage.Delete(string.Format("{0},{1}", album.FolderName, picture.FileName));
-        //}
-
-        //[HttpPost]
-        //[RequireRole(Role = "family")]
-        //public ActionResult DeletePictures(string pictureIds)
-        //{
-        //    if (!Request.IsAjaxRequest())
-        //    {
-        //        return HttpNotFound();
-        //    }
-
-        //    // Validate pictureIds
-        //    IEnumerable<int> ids = pictureIds.Split(',').Select(int.Parse);
-
-        //    // Foreach picture id, delete it.
-        //    foreach (int pictureId in ids)
-        //    {
-        //        this.DeletePicture(pictureId);
-        //    }
-
-        //    return RedirectToAction("Index");
-        //}
+            return RedirectToAction("Index");
+        }
     }
 }
