@@ -24,4 +24,4 @@ AppSettingsSecrets.config
 imagecache/
 *.swp
 *.*~
-
+*.crunchsolution.cache
