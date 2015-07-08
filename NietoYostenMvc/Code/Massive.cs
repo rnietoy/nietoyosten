@@ -601,7 +601,7 @@ namespace Massive
                     cmd.Connection = conn;
                     cmd.ExecuteNonQuery();
                     cmd.CommandText = "SELECT @@IDENTITY as newID";
-                    ex.ID = cmd.ExecuteScalar();
+                    ex.ID = (int)cmd.ExecuteScalar();
                     Inserted(ex);
                 }
                 return ex;

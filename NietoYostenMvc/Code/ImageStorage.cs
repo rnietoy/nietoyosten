@@ -50,5 +50,22 @@ namespace NietoYostenMvc.Code
             CloudBlockBlob blockBlob = this.GetCloudBlockBlob(fullName);
             blockBlob.Delete();
         }
+
+        public bool TryDelete(string fullName)
+        {
+            bool success = false;
+            
+            try
+            {
+                this.Delete(fullName);
+                success = true;
+            }
+            catch (Microsoft.WindowsAzure.Storage.StorageException)
+            {
+                // do nothing
+            }
+
+            return success;
+        }
     }
 }

@@ -199,11 +199,14 @@ namespace NietoYostenMvc.Controllers
             {
                 int id = int.Parse(pictureId);
                 dynamic picture = this.picturesModel.Get(id);
-                this.imageStorage.Delete(picture.FullName);
+                this.imageStorage.TryDelete(picture.FullName);
                 this.picturesModel.Delete(id);
             }
 
-            return RedirectToAction("Index");
+            string message = string.Format("Deleted {0} pictures.", pictureIds.Length);
+            this.SetAlertMessage(message, AlertClass.AlertSuccess);
+
+            return Json(message);
         }
     }
 }

@@ -33,9 +33,10 @@ namespace NietoYostenMvc.Tests
         [Fact]
         public void Test_AddPicture()
         {
-            dynamic result = picturesModel.Add(this.defaultAlbumName, "picture1.jpeg", this.defaultUserId);
-            output.WriteLine("Picture ID: " + result.ID);
-            Assert.NotNull(result.ID);
+            dynamic addResult = picturesModel.Add(this.defaultAlbumName, "picture1.jpeg", this.defaultUserId);
+            dynamic picture = picturesModel.Get(addResult.ID);
+            output.WriteLine("Picture ID: " + picture.ID);
+            Assert.NotNull(picture.ID);
         }
 
         [Fact]
