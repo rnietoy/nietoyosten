@@ -203,7 +203,7 @@ namespace NietoYostenMvc.Controllers
                 this.picturesModel.Delete(id);
             }
 
-            string message = string.Format("Deleted {0} pictures.", pictureIds.Length);
+            string message = string.Format("Deleted {0} picture(s).", pictureIds.Length);
             this.SetAlertMessage(message, AlertClass.AlertSuccess);
 
             return Json(message);

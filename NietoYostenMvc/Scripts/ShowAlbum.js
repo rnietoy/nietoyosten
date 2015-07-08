@@ -13,13 +13,15 @@ $(document).ready(function() {
             pictureIds: ids
         }
 
-        $.ajax({
-            type: "post",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            url: "/pictures/DeletePictures",
-            data: JSON.stringify(dto),
-            success: function (data) { window.location.reload(true);}
-        });
+        if (confirm("Are you sure you want to delete the selected picture(s)?")) {
+            $.ajax({
+                type: "post",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "/pictures/DeletePictures",
+                data: JSON.stringify(dto),
+                success: function (data) { window.location.reload(true); }
+            });
+        }
     });
 });
