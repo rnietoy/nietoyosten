@@ -7,7 +7,7 @@ $storageAccountKey = Get-AzureStorageKey "nietoyosten" | % { $_.Primary }
 $context = New-AzureStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $storageAccountKey
 
 $containerName = "pictures"
-$albumsToSkip = "randc", "bandw"
+$albumsToSkip = "randc", "bandw", "camino"
 
 function Get-PicturesFromDb
 {
@@ -71,6 +71,19 @@ function Should-Skip($pic)
     return $skip
 }
 
+function Pick-Result($pic, $results)
+{
+    foreach ($r in $results)
+    {
+        if ($r -match $pic.FolderName)
+        {
+            return $r
+        }
+    }
+
+    return $results[0]
+}
+
 function Upload-Pictures
 {
     $pictures = Get-PicturesFromDb
@@ -97,8 +110,8 @@ function Upload-Pictures
 
         if ($result.Count -gt 1)
         {
-            $localFile = $result[0]
-            Write-Output "Found $($result.Count) files with name '$($pic.FileName)'. Using first file '$($result[0])'"
+            $localFile = Pick-Result $pic $result
+            Write-Output "Found $($result.Count) files with name '$($pic.FileName)'. Using file '$localFile'"
         }
 
         $blobName = Get-BlobName $pic
