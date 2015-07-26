@@ -156,6 +156,7 @@
   <ItemGroup>
     <Compile Include="CodeBits\PasswordGenerator.cs" />
     <Compile Include="Code\ActionFilters.cs" />
+    <Compile Include="Code\FacebookUtil.cs" />
     <Compile Include="Code\ImageStorage.cs" />
     <Compile Include="Code\ControllerUtil.cs" />
     <Compile Include="Code\HandleUserFriendlyErrorAttribute.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="Content\channel.html" />
     <Content Include="Content\styles.css" />
     <None Include="Database\MigrateToVersion2.sql" />
     <None Include="Database\NietoYostenDb.sql" />
@@ -197,9 +199,11 @@
     <Content Include="images\nylogomas.png" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\login.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\ShowAlbum.js" />
     <Content Include="Scripts\UploadPicture.js" />
+    <Content Include="Scripts\util.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -278,7 +282,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>5640</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:5640/</IISUrl>
+          <IISUrl>http://localhost:5640</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://local.nietoyosten.com:5640/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

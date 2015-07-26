@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Dynamic;
 using System.Net.Mail;
 using System.Security.Cryptography;
@@ -16,12 +17,12 @@ namespace NietoYostenMvc.Controllers
 {
     public class AccountController : ApplicationController
     {
-        private readonly Users _users;
+        private readonly Users users;
         private readonly PasswordResetTokens _pwdResetTokens;
 
         public AccountController()
         {
-            _users = new Users();
+            this.users = new Users();
             _pwdResetTokens = new PasswordResetTokens();
         }
 
@@ -45,7 +46,7 @@ namespace NietoYostenMvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(string email, string password)
         {
-            var user = _users.Single(where:"Email = @0", args:email);
+            var user = this.users.Single(where:"Email = @0", args:email);
 
             // Check if user exists
             if (null == user)
@@ -75,9 +76,61 @@ namespace NietoYostenMvc.Controllers
                 return View();
             }
 
-            _users.Update(new {LastLogin = DateTime.Now}, user.ID);
+            this.users.Update(new {LastLogin = DateTime.Now}, user.ID);
             FormsAuthentication.SetAuthCookie(email, false);
             return LoginAndRedirectToReturnUrl();
+        }
+
+        [HttpPost]
+        public ActionResult FbLogin(string signed_request, string return_url)
+        {
+            if (!Request.IsAjaxRequest())
+            {
+                return HttpNotFound();
+            }
+
+            if (string.IsNullOrWhiteSpace(signed_request))
+            {
+                return Json(
+                    new FbLoginResult
+                    {
+                        Success = false,
+                        RedirectUrl = "/Account/Login"
+                    });
+            }
+
+            bool isValid = FacebookUtil.ValidateSignedRequest(signed_request);
+            if (!isValid)
+            {
+                return Json(
+                    new FbLoginResult
+                    {
+                        Success = false,
+                        RedirectUrl = "/Account/Login"
+                    });
+            }
+
+            int fbUserId = FacebookUtil.GetFacebookUserId(signed_request);
+            var user = this.users.Single(where: "FacebookUserID = @0", args: fbUserId);
+
+            if (user == null)
+            {
+                return Json(
+                    new FbLoginResult
+                    {
+                        Success = false,
+                        RedirectUrl = "/Account/FbRegister"
+                    });
+            }
+
+            this.users.Update(new { LastLogin = DateTime.Now }, user.ID);
+            FormsAuthentication.SetAuthCookie(user.Email, false);
+            return Json(
+                new FbLoginResult
+                {
+                    Success = true,
+                    RedirectUrl = return_url
+                });
         }
 
         public ActionResult Logout()
@@ -95,7 +148,7 @@ namespace NietoYostenMvc.Controllers
         public ActionResult RecoverPassword(string email)
         {
             // First check that user exists in our database is approved
-            var user = _users.Single(where: "Email = @0", args: email);
+            var user = this.users.Single(where: "Email = @0", args: email);
             if (null == user || !user.IsApproved)
             {
                 this.SetAlertMessage("Este usuario no existe en el sitio.", AlertClass.AlertDanger);
@@ -165,8 +218,8 @@ namespace NietoYostenMvc.Controllers
             // Check if password is correct
             if (sha1HashedPassword != membership.Password) return false;
 
-            // Set password in Users.HashedPassword (if password is correct)
-            _users.SetPassword(user.ID, password);
+            // Set password in this.users.HashedPassword (if password is correct)
+            this.users.SetPassword(user.ID, password);
 
             return true;
         }
@@ -180,7 +233,7 @@ namespace NietoYostenMvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(string email, string password, string confirm, string reason)
         {
-            var result = _users.Register(email, password, confirm);
+            var result = this.users.Register(email, password, confirm);
 
             if (result.Success)
             {
@@ -208,6 +261,11 @@ namespace NietoYostenMvc.Controllers
             return View();
         }
 
+        public ActionResult FbRegister()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Send an email notification to admins telling them that a new user
         /// has registered and needs to be approved/rejected.
@@ -218,7 +276,7 @@ namespace NietoYostenMvc.Controllers
             var fromAddress = new MailAddress("noreply@nietoyosten.com", "NietoYosten");
             message.From = fromAddress;
 
-            var admins = _users.GetUsersInRole("admin");
+            var admins = this.users.GetUsersInRole("admin");
             foreach (var admin in admins)
             {
                 message.To.Add(admin);
@@ -236,7 +294,7 @@ namespace NietoYostenMvc.Controllers
         [RequireRole(Role = "admin")]
         public ActionResult ApprovalRequests()
         {
-            IEnumerable<dynamic> requests = _users.Query("SELECT U.ID, U.Email, AR.Reason FROM Users U " +
+            IEnumerable<dynamic> requests = this.users.Query("SELECT U.ID, U.Email, AR.Reason FROM this.users U " +
                          "INNER JOIN ApprovalRequests AR ON U.ID = AR.UserID");
 
             return View(requests);
@@ -245,9 +303,9 @@ namespace NietoYostenMvc.Controllers
         [RequireRole(Role = "admin")]
         public ActionResult Approve(int id)
         {
-            dynamic user = _users.Single(id);
+            dynamic user = this.users.Single(id);
             user.IsApproved = true;
-            _users.Update(user, id);
+            this.users.Update(user, id);
 
             var db = new DynamicModel("NietoYostenDb", "ApprovalRequests");
             db.Delete(where: "UserID = @0", args: id);
@@ -259,11 +317,11 @@ namespace NietoYostenMvc.Controllers
         [RequireRole(Role = "admin")]
         public ActionResult Reject(int id)
         {
-            dynamic user = _users.Single(id);
+            dynamic user = this.users.Single(id);
 
             var db = new DynamicModel("NietoYostenDb", "ApprovalRequests");
             db.Delete(where: "UserID = @0", args: id);
-            _users.Delete(id);
+            this.users.Delete(id);
 
             NyUtil.SetAlertMessage(this, string.Format("El usuario {0} ha sido rechazado.", user.Email), AlertClass.AlertInfo);
             return RedirectToAction("ApprovalRequests", "Account");
@@ -302,14 +360,14 @@ namespace NietoYostenMvc.Controllers
                 return RedirectToAction("RecoverPassword", "Account");
             }
 
-            dynamic result = _users.CheckPasswordStrength(password, confirm);
+            dynamic result = this.users.CheckPasswordStrength(password, confirm);
             if (!result.Success)
             {
                 NyUtil.SetAlertMessage(this, result.Message, AlertClass.AlertDanger);
                 return View();
             }
 
-            _users.SetPassword(userId, password);
+            this.users.SetPassword(userId, password);
 
             // Delete the token(s) for this user from the DB so it can no longer be used again
             _pwdResetTokens.Delete(where: "UserID = " + userId);
