@@ -15,6 +15,13 @@ namespace NietoYostenMvc.Code
         public const string AlertInfo = "alert-info";
     }
 
+    public class NyResult
+    {
+        public bool Success;
+        public string RedirectUrl;
+        public string Message;
+    }
+
     public static class NyUtil
     {
         public static void SendMail(MailMessage message)

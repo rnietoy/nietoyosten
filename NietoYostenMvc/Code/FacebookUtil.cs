@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Security.Cryptography;
 using System.Text;
+using Facebook;
 using Newtonsoft.Json.Linq;
 
 namespace NietoYostenMvc.Code
@@ -13,12 +14,7 @@ namespace NietoYostenMvc.Code
         public string UserName;
     }
 
-    public class FbLoginResult
-    {
-        public bool Success;
-        public string RedirectUrl;
-        public string Message;
-    }
+    
 
     public class FacebookUtil
     {
@@ -63,15 +59,35 @@ namespace NietoYostenMvc.Code
             return ByteArraysEqual(decodedSignature, expectedSig);
         }
 
-        public static int GetFacebookUserId(string signedRequest)
+        /// <summary>
+        /// Decode signed request sent by Facebook
+        /// </summary>
+        /// <param name="signedRequest">Signed request string</param>
+        /// <returns>JObject containing decoded request</returns>
+        public static JObject DecodeSignedRequest(string signedRequest)
         {
-            // Decode signed_request sent by Facebook
             string payload = signedRequest.Split('.')[1];
             var json = Encoding.UTF8.GetString(Base64UrlDecode(payload));
+            return JObject.Parse(json);
+        }
 
-            var o = JObject.Parse(json);
+        public static string GetAccessToken(string signedRequest)
+        {
+            var o = FacebookUtil.DecodeSignedRequest(signedRequest);
+            return o.SelectToken("oauth_token").ToString().Replace("\"", "");
+        }
 
-            return int.Parse(o.SelectToken("user_id").ToString().Replace("\"", ""));
+        public static long GetFacebookUserId(string signedRequest)
+        {
+            var o = FacebookUtil.DecodeSignedRequest(signedRequest);
+            return long.Parse(o.SelectToken("user_id").ToString().Replace("\"", ""));
+        }
+
+        public static string GetUserEmail(string accessToken)
+        {
+            FacebookClient fbClient = new FacebookClient(accessToken);
+            dynamic user = fbClient.Get("me");
+            return user.email;
         }
 
         public static FacebookRegistrationInfo GetRegistrationInfo(string signedRequest)
@@ -79,15 +95,20 @@ namespace NietoYostenMvc.Code
             // Decode signed_request sent by Facebook
             string payload = signedRequest.Split('.')[1];
             var json = Encoding.UTF8.GetString(Base64UrlDecode(payload));
-
             var o = JObject.Parse(json);
+            string email = null;
+            JToken regEmail = o.SelectToken("registration.email");
 
-            return new FacebookRegistrationInfo()
-                {
-                    UserId = o.SelectToken("user_id").ToString().Replace("\"", ""),
-                    UserName = o.SelectToken("registration.email").ToString().Replace("\"", ""),
-                    Email = o.SelectToken("registration.email").ToString().Replace("\"", "")
-                };
+            if (regEmail != null)
+            {
+                email = regEmail.ToString().Replace("\"", "");
+            }
+
+            return new FacebookRegistrationInfo
+            {
+                UserId = o.SelectToken("user_id").ToString().Replace("\"", ""),
+                Email = email
+            };
         }
     }
 }

@@ -8,7 +8,9 @@ using System.Text;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
+using CodeBits;
 using Elmah;
+using Facebook;
 using Massive;
 using NietoYostenMvc.Code;
 using NietoYostenMvc.Models;
@@ -75,62 +77,95 @@ namespace NietoYostenMvc.Controllers
                 this.SetAlertMessage("Este usuario no ha sido aprovado aún.", AlertClass.AlertDanger);
                 return View();
             }
-
-            this.users.Update(new {LastLogin = DateTime.Now}, user.ID);
-            FormsAuthentication.SetAuthCookie(email, false);
+            
+            this.LoginUser(user);
             return LoginAndRedirectToReturnUrl();
         }
 
         [HttpPost]
-        public ActionResult FbLogin(string signed_request, string return_url)
+        public ActionResult FbLogin(string signedRequest, string accessToken, string returnUrl)
         {
             if (!Request.IsAjaxRequest())
             {
                 return HttpNotFound();
             }
 
-            if (string.IsNullOrWhiteSpace(signed_request))
+            if (string.IsNullOrWhiteSpace(signedRequest))
             {
                 return Json(
-                    new FbLoginResult
+                    new NyResult
                     {
                         Success = false,
-                        RedirectUrl = "/Account/Login"
+                        RedirectUrl = "/Account/Login",
+                        Message = "An error occured during facebook login. Signed request is empty."
                     });
             }
 
-            bool isValid = FacebookUtil.ValidateSignedRequest(signed_request);
+            bool isValid = FacebookUtil.ValidateSignedRequest(signedRequest);
             if (!isValid)
             {
                 return Json(
-                    new FbLoginResult
+                    new NyResult
                     {
                         Success = false,
-                        RedirectUrl = "/Account/Login"
+                        RedirectUrl = "/Account/Login",
+                        Message = "An error occured during facebook login. Signed request is not valid."
                     });
             }
 
-            int fbUserId = FacebookUtil.GetFacebookUserId(signed_request);
+            long fbUserId = FacebookUtil.GetFacebookUserId(signedRequest);
+
+            // Check if FB user id is associated with a user in our DB
             var user = this.users.Single(where: "FacebookUserID = @0", args: fbUserId);
-
-            if (user == null)
+            if (user != null)
             {
-                return Json(
-                    new FbLoginResult
+                if (user.IsApproved)
+                {
+                    this.LoginUser(user);
+                    return Json(new NyResult
+                        {
+                            Success = true,
+                            RedirectUrl = returnUrl
+                        });
+                }
+
+                return Json(new NyResult
                     {
                         Success = false,
-                        RedirectUrl = "/Account/FbRegister"
+                        RedirectUrl = "/Account/Login",
+                        Message = "Este usuario no ha sido aprovado aún."
                     });
             }
 
-            this.users.Update(new { LastLogin = DateTime.Now }, user.ID);
-            FormsAuthentication.SetAuthCookie(user.Email, false);
-            return Json(
-                new FbLoginResult
+            string email = FacebookUtil.GetUserEmail(accessToken);
+
+            // Merge with existing user if necessary
+            if (email == null)
+            {
+                return Json(new NyResult
+                {
+                    Success = false,
+                    RedirectUrl = "/Account/Login",
+                    Message = "User is not logged into nietoyosten website app."
+                });
+            }
+
+            var mergeUser = this.users.Single(where: "Email = @0", args: email);
+            if (mergeUser != null)
+            {
+                this.users.Update(new { FacebookUserID = fbUserId }, mergeUser.ID);
+                this.LoginUser(mergeUser);
+                return Json(new NyResult
                 {
                     Success = true,
-                    RedirectUrl = return_url
+                    RedirectUrl = "/",
                 });
+            }
+
+            // Create new user
+            string password = PasswordGenerator.Generate(12);
+            NyResult registerResult = this.Register(email, password, "Facebook registration");
+            return Json(registerResult);
         }
 
         public ActionResult Logout()
@@ -259,11 +294,6 @@ namespace NietoYostenMvc.Controllers
 
             NyUtil.SetAlertMessage(this, result.Message, AlertClass.AlertDanger);
             return View();
-        }
-
-        public ActionResult FbRegister()
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -400,6 +430,53 @@ namespace NietoYostenMvc.Controllers
             }
             
             return true;
+        }
+
+        /// <summary>
+        /// Login user, record login in DB
+        /// </summary>
+        /// <param name="user">User to login</param>
+        private void LoginUser(dynamic user)
+        {
+            this.users.Update(new { LastLogin = DateTime.Now }, user.ID);
+            FormsAuthentication.SetAuthCookie(user.Email, false);
+        }
+
+        private NyResult Register(string email, string password, string reason)
+        {
+            var result = this.users.Register(email, password, password);
+            
+            if (result.Success)
+            {
+                // Add approval request and send a notification email
+                try
+                {
+                    var db = new DynamicModel("NietoYostenDb", "ApprovalRequests");
+                    db.Insert(new { UserID = result.User.ID, Reason = reason });
+                    SendNewUserRegistrationNotificationToAdmins(email, reason);
+                }
+                catch (Exception ex)
+                {
+                    ErrorSignal.FromCurrentContext().Raise(ex);
+                    return new NyResult
+                    {
+                        Success = false,
+                        Message = "Ocurrió un error al solicitar la aprovación del usuario."
+                    };
+                }
+
+                return new NyResult
+                {
+                    Success = true,
+                    Message = result.Message
+                };
+            }
+
+            return new NyResult
+            {
+                Success = false,
+                Message = result.Message
+            };
         }
     }
 }

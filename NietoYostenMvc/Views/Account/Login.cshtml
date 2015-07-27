@@ -30,7 +30,7 @@
 <p>No tienes una cuenta aún? Da click @Html.ActionLink("aquí", "Register", "Account").</p>
 <p/>
 <p>O puedes entrar con Facebook:</p>
-<div class="fb-login-button" data-max-rows="1" data-size="medium" data-show-faces="false" data-auto-logout-link="false" onlogin="fblogin_onlogin"></div>
+<div class="fb-login-button" scope="public_profile,email" onlogin="fblogin_onlogin"></div>
 
 <script type="text/javascript" src="~/Scripts/util.js"></script>
 <script type="text/javascript" src="~/Scripts/login.js"></script>
