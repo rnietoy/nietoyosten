@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Massive;
 using NietoYostenMvc.Code;
 using NietoYostenMvc.Models;
 using Xunit;
@@ -28,17 +23,17 @@ namespace NietoYostenMvc.Tests
         public void Test_Add_Album()
         {
             string albumName = TestUtil.FormatUnique("europe_vacations{0}");
-            this.albumsModel.Add("Test Europe vacations", albumName, TestUtil.DefaultUserId);
+            this.albumsModel.Add("Test Europe vacations", albumName, TestUtil.TestUserId);
         }
 
         [Fact]
         public void Test_Add_Duplicate_FolderName()
         {
             string albumName = TestUtil.FormatUnique("europe_vacations{0}");
-            this.albumsModel.Add("Test Europe vacations", albumName, TestUtil.DefaultUserId);
+            this.albumsModel.Add("Europe vacations", albumName, TestUtil.TestUserId);
 
             Exception ex = Assert.Throws<UserFriendlyException>(
-                () => this.albumsModel.Add("Europe vacations", albumName, TestUtil.DefaultUserId));
+                () => this.albumsModel.Add("Europe vacations", albumName, TestUtil.TestUserId));
 
             Assert.Equal("An album with this folder name already exists.", ex.Message);
         }

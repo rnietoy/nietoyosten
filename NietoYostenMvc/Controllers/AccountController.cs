@@ -13,6 +13,7 @@ using Elmah;
 using Facebook;
 using Massive;
 using NietoYostenMvc.Code;
+using NietoYostenMvc.Code.FormsAuth;
 using NietoYostenMvc.Models;
 
 namespace NietoYostenMvc.Controllers
@@ -20,12 +21,18 @@ namespace NietoYostenMvc.Controllers
     public class AccountController : ApplicationController
     {
         private readonly Users users;
-        private readonly PasswordResetTokens _pwdResetTokens;
+        private readonly PasswordResetTokens pwdResetTokens;
+        private readonly IFormsAuth formsAuth;
 
-        public AccountController()
+        public AccountController() : this(new FormsAuthWrapper())
+        {
+        }
+
+        public AccountController(IFormsAuth formsAuth)
         {
             this.users = new Users();
-            _pwdResetTokens = new PasswordResetTokens();
+            this.pwdResetTokens = new PasswordResetTokens();
+            this.formsAuth = formsAuth;
         }
 
         public ActionResult Login()
@@ -101,8 +108,7 @@ namespace NietoYostenMvc.Controllers
                     });
             }
 
-            bool isValid = FacebookUtil.ValidateSignedRequest(signedRequest);
-            if (!isValid)
+            if (!FacebookUtil.ValidateSignedRequest(signedRequest))
             {
                 return Json(
                     new NyResult
@@ -170,7 +176,7 @@ namespace NietoYostenMvc.Controllers
 
         public ActionResult Logout()
         {
-            FormsAuthentication.SignOut();
+            this.formsAuth.SignOut();
             return RedirectToAction("Index", "Home");
         }
 
@@ -190,7 +196,7 @@ namespace NietoYostenMvc.Controllers
                 return View();
             }
 
-            string token = _pwdResetTokens.AddToken(user.ID);
+            string token = this.pwdResetTokens.AddToken(user.ID);
 
             // Send out email with new password
             var message = new MailMessage();
@@ -400,7 +406,7 @@ namespace NietoYostenMvc.Controllers
             this.users.SetPassword(userId, password);
 
             // Delete the token(s) for this user from the DB so it can no longer be used again
-            _pwdResetTokens.Delete(where: "UserID = " + userId);
+            this.pwdResetTokens.Delete(where: "UserID = " + userId);
 
             this.SetAlertMessage("Your password has been updated. Please log in with your new password.", AlertClass.AlertInfo);
             return RedirectToAction("Login", "Account");
@@ -415,7 +421,7 @@ namespace NietoYostenMvc.Controllers
                 return false;
             }
 
-            dynamic tokenEntry = _pwdResetTokens.Single(where: string.Format("HashedToken='{0}'", Crypto.Hash(token)));
+            dynamic tokenEntry = this.pwdResetTokens.Single(where: string.Format("HashedToken='{0}'", Crypto.Hash(token)));
             if (null == tokenEntry)
             {
                 return false;
@@ -439,7 +445,7 @@ namespace NietoYostenMvc.Controllers
         private void LoginUser(dynamic user)
         {
             this.users.Update(new { LastLogin = DateTime.Now }, user.ID);
-            FormsAuthentication.SetAuthCookie(user.Email, false);
+            this.formsAuth.SetAuthCookie(user.Email, false);
         }
 
         private NyResult Register(string email, string password, string reason)

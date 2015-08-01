@@ -53,6 +53,12 @@ namespace NietoYostenMvc.Models
             return result;
         }
 
+        public void SetFacebookUserId(string email, long facebookUserId)
+        {
+            var user = this.Single(where: "Email = @0", args: email);
+            this.Update(new { FacebookUserID = facebookUserId }, user.ID);
+        }
+
         public void SetPassword(int UserID, string password)
         {
             this.Update(new {HashedPassword = Crypto.HashPassword(password)}, UserID);

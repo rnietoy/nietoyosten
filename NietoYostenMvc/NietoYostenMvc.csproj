@@ -161,6 +161,8 @@
     <Compile Include="CodeBits\PasswordGenerator.cs" />
     <Compile Include="Code\ActionFilters.cs" />
     <Compile Include="Code\FacebookUtil.cs" />
+    <Compile Include="Code\FormsAuth\FormsAuthWrapper.cs" />
+    <Compile Include="Code\FormsAuth\IFormsAuth.cs" />
     <Compile Include="Code\ImageStorage.cs" />
     <Compile Include="Code\ControllerUtil.cs" />
     <Compile Include="Code\HandleUserFriendlyErrorAttribute.cs" />
@@ -194,7 +196,6 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Content Include="Content\channel.html" />
     <Content Include="Content\styles.css" />
     <None Include="Database\MigrateToVersion2.sql" />
     <None Include="Database\NietoYostenDb.sql" />

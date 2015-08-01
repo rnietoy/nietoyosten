@@ -3,49 +3,43 @@ using System.Linq;
 using NietoYostenMvc.Code;
 using NietoYostenMvc.Models;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace NietoYostenMvc.Tests
 {
     public class PicturesModelTests
     {
-        private readonly string defaultAlbumName = "TestAlbum";
-        private int defaultAlbumId;
-        private readonly int defaultUserId = 23;
+        private const string testAlbumName = "TestAlbum";
+        private readonly int testAlbumId;
 
-        private readonly ITestOutputHelper output;
-        private PicturesModel picturesModel;
+        private readonly PicturesModel picturesModel;
 
-        public PicturesModelTests(ITestOutputHelper output)
+        public PicturesModelTests()
         {
-            this.output = output;
             this.picturesModel = PicturesModel.GetInstance();
-
             TestUtil.InitDatabase();
 
             // Create a test album
             AlbumsModel albumsModel = AlbumsModel.GetInstance();
-            albumsModel.Add(this.defaultAlbumName, this.defaultAlbumName, this.defaultUserId);
-            dynamic album = albumsModel.GetByFolderName(defaultAlbumName);
-            this.defaultAlbumId = (int)album.ID;
+            albumsModel.Add(testAlbumName, testAlbumName, TestUtil.TestUserId);
+            dynamic album = albumsModel.GetByFolderName(testAlbumName);
+            this.testAlbumId = (int)album.ID;
         }
 
         [Fact]
         public void Test_AddPicture()
         {
-            dynamic addResult = picturesModel.Add(this.defaultAlbumName, "picture1.jpeg", this.defaultUserId);
+            dynamic addResult = picturesModel.Add(testAlbumName, "picture1.jpeg", TestUtil.TestUserId);
             dynamic picture = picturesModel.Get(addResult.ID);
-            output.WriteLine("Picture ID: " + picture.ID);
             Assert.NotNull(picture.ID);
         }
 
         [Fact]
         public void Test_Add_Picture_With_Existing_FileName()
         {
-            picturesModel.Add(this.defaultAlbumName, "picture1.jpeg", this.defaultUserId);
+            picturesModel.Add(testAlbumName, "picture1.jpeg", TestUtil.TestUserId);
 
             Exception ex = Assert.Throws<UserFriendlyException>(
-                () => picturesModel.Add(this.defaultAlbumName, "picture1.jpeg", this.defaultUserId));
+                () => picturesModel.Add(testAlbumName, "picture1.jpeg", TestUtil.TestUserId));
 
             Assert.Equal("An image with this file name already exists in this album.", ex.Message);
         }
@@ -53,29 +47,32 @@ namespace NietoYostenMvc.Tests
         [Fact]
         public void Test_Get_Page_With_Default_PageSize()
         {
+            // Default page size is 20.
             PicturesModel model = PicturesModel.GetInstance();
+            this.InsertTestPictures(50);
 
-            PageResult pageResult = model.GetPage("randc_before", 2);
-            Assert.Equal(26, pageResult.TotalPages);
+            PageResult pageResult = model.GetPage(testAlbumName, 2);
+            Assert.Equal(3, pageResult.TotalPages);
             Assert.Equal(20, pageResult.Items.Count());
             dynamic[] items = pageResult.Items.ToArray();
 
-            Assert.Equal("A171.jpg", items[0].FileName);
-            Assert.Equal("A188.jpg", items[11].FileName);
+            Assert.Equal("picture21.jpg", items[0].FileName);
+            Assert.Equal("picture32.jpg", items[11].FileName);
         }
 
         [Fact]
         public void Test_Get_Page_With_Custom_PageSize()
         {
             PicturesModel model = PicturesModel.GetInstance(pageSize: 12);
+            this.InsertTestPictures(50);
 
-            PageResult pageResult = model.GetPage("randc_before", 2);
-            Assert.Equal(44, pageResult.TotalPages);
+            PageResult pageResult = model.GetPage(testAlbumName, 2);
+            Assert.Equal(5, pageResult.TotalPages);
             Assert.Equal(12, pageResult.Items.Count());
             dynamic[] items = pageResult.Items.ToArray();
 
-            Assert.Equal("A156.jpg", items[0].FileName);
-            Assert.Equal("A175.jpg", items[11].FileName);
+            Assert.Equal("picture13.jpg", items[0].FileName);
+            Assert.Equal("picture24.jpg", items[11].FileName);
         }
 
         [Fact]
@@ -88,25 +85,42 @@ namespace NietoYostenMvc.Tests
         [Fact]
         public void Test_Get_Picture()
         {
-            int pictureId = 249;
-            dynamic picture = this.picturesModel.Get(pictureId);
+            this.picturesModel.Add(testAlbumName, "testpicture1.jpg", TestUtil.TestUserId);
+            this.picturesModel.Add(testAlbumName, "testpicture2.jpg", TestUtil.TestUserId);
+            this.picturesModel.Add(testAlbumName, "testpicture3.jpg", TestUtil.TestUserId);
+
+            // Test getting picture by filename
+            dynamic picture = this.picturesModel.GetByFileName(this.testAlbumId, "testpicture2.jpg");
+            int pictureId = picture.ID;
+            
             Assert.Equal(pictureId, picture.ID);
-            Assert.Equal("B218.jpg", picture.FileName);
-            Assert.Equal("randc_before", picture.FolderName);
+            Assert.Equal("testpicture2.jpg", picture.FileName);
+            Assert.Equal(testAlbumName, picture.FolderName);
             Assert.Equal(pictureId - 1, picture.PreviousID);
             Assert.Equal(pictureId + 1, picture.NextID);
-            Assert.Equal(12, picture.AlbumPage);
-            Assert.Equal("randc_before/B218.jpg", picture.FullName);
+            Assert.Equal(1, picture.AlbumPage);
+            Assert.Equal(testAlbumName + "/testpicture2.jpg", picture.FullName);
+
+            // Test getting picture by ID
+            picture = this.picturesModel.Get(pictureId);
+            Assert.Equal(pictureId, picture.ID);
+            Assert.Equal("testpicture2.jpg", picture.FileName);
+            Assert.Equal(testAlbumName, picture.FolderName);
+            Assert.Equal(pictureId - 1, picture.PreviousID);
+            Assert.Equal(pictureId + 1, picture.NextID);
+            Assert.Equal(1, picture.AlbumPage);
+            Assert.Equal(testAlbumName + "/testpicture2.jpg", picture.FullName);
         }
 
         [Fact]
         public void Test_Get_FirstPicture_In_Album()
         {
-            const int pictureId = 16;
-            dynamic picture = this.picturesModel.Get(pictureId);
-            Assert.Equal(pictureId, picture.ID);
-            Assert.Equal("A139.jpg", picture.FileName);
-            Assert.Equal("randc_before", picture.FolderName);
+            this.InsertTestPictures(25);
+            dynamic picture = this.picturesModel.GetByFileName(testAlbumId, "picture1.jpg");
+            int pictureId = picture.ID;
+            
+            Assert.Equal("picture1.jpg", picture.FileName);
+            Assert.Equal(testAlbumName, picture.FolderName);
             Assert.Null(picture.PreviousID);
             Assert.Equal(pictureId + 1, picture.NextID);
             Assert.Equal(1, picture.AlbumPage);
@@ -115,32 +129,40 @@ namespace NietoYostenMvc.Tests
         [Fact]
         public void Test_Get_LastPicture_In_Album()
         {
-            const int pictureId = 532;
-            dynamic picture = this.picturesModel.Get(pictureId);
+            this.InsertTestPictures(25);
+            dynamic picture = this.picturesModel.GetByFileName(testAlbumId, "picture25.jpg");
+            int pictureId = picture.ID;
+
             Assert.Equal(pictureId, picture.ID);
-            Assert.Equal("G079.jpg", picture.FileName);
-            Assert.Equal("randc_before", picture.FolderName);
+            Assert.Equal("picture25.jpg", picture.FileName);
+            Assert.Equal(testAlbumName, picture.FolderName);
             Assert.Equal(pictureId - 1, picture.PreviousID);
             Assert.Null(picture.NextID);
-            Assert.Equal(26, picture.AlbumPage);
+            Assert.Equal(2, picture.AlbumPage);
         }
 
         [Fact]
         public void Test_Delete_Picture()
         {
             string filename = TestUtil.FormatUnique("picture{0:D3}");
-            picturesModel.Add(this.defaultAlbumName, filename, this.defaultUserId);
+            picturesModel.Add(testAlbumName, filename, TestUtil.TestUserId);
 
-            dynamic picture = picturesModel.GetByFileName(this.defaultAlbumId, filename);
+            dynamic picture = picturesModel.GetByFileName(this.testAlbumId, filename);
             picturesModel.Delete(picture.ID);
 
             Assert.Null(picturesModel.Get(picture.ID));
         }
 
-        [Fact]
-        public void Test_Output()
+        /// <summary>
+        /// Insert several pages of test pictures so we can test pagination.
+        /// </summary>
+        private void InsertTestPictures(int count)
         {
-            this.output.WriteLine("hello");
+            for (int i = 1; i <= count; i++)
+            {
+                string picName = string.Format("picture{0:D}.jpg", i);
+                picturesModel.Add(testAlbumName, picName, TestUtil.TestUserId);
+            }
         }
     }
 }
