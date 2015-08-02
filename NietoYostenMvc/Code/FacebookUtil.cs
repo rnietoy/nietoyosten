@@ -18,7 +18,11 @@ namespace NietoYostenMvc.Code
     {
         private static readonly string appSecret = ConfigurationManager.AppSettings["FacebookAppSecret"];
 
-        public static string GetUserEmailTestValue { get; set; }
+        /// <summary>
+        /// Test hook property. For unit tests to inject a test user email to be returned by the GetUserEmail
+        /// method instead of calling the real facebook api.
+        /// </summary>
+        public static string TestUserEmail { get; set; }
 
         static byte[] Base64UrlDecode(string s)
         {
@@ -85,14 +89,14 @@ namespace NietoYostenMvc.Code
 
         public static string GetUserEmail(string accessToken)
         {
-            if (FacebookUtil.GetUserEmailTestValue == null)
+            if (FacebookUtil.TestUserEmail == null)
             {
                 FacebookClient fbClient = new FacebookClient(accessToken);
                 dynamic user = fbClient.Get("me");
                 return user.email;
             }
 
-            return FacebookUtil.GetUserEmailTestValue;
+            return FacebookUtil.TestUserEmail;
         }
 
         public static FacebookRegistrationInfo GetRegistrationInfo(string signedRequest)

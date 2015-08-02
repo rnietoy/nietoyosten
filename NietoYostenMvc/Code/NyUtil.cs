@@ -24,19 +24,6 @@ namespace NietoYostenMvc.Code
 
     public static class NyUtil
     {
-        public static void SendMail(MailMessage message)
-        {
-            using (var smtpClient = new SmtpClient())
-            {
-                if (smtpClient.DeliveryMethod == SmtpDeliveryMethod.Network)
-                {
-                    smtpClient.Credentials = new NetworkCredential("nietoyosten", ConfigurationManager.AppSettings["mailer_pwd"]);
-                }
-                message.Headers.Add("Message-ID", "<" + Guid.NewGuid().ToString().Replace("-", "") + "@mail.nietoyosten.com>");
-                smtpClient.Send(message);
-            }
-        }
-
         public static void SetAlertMessage(this Controller controller, string message, string alertClass = AlertClass.AlertSuccess)
         {
             controller.TempData["AlertMessage"] = message;

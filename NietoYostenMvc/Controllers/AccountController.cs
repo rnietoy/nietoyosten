@@ -23,16 +23,18 @@ namespace NietoYostenMvc.Controllers
         private readonly Users users;
         private readonly PasswordResetTokens pwdResetTokens;
         private readonly IFormsAuth formsAuth;
+        private readonly IMailer mailer;
 
-        public AccountController() : this(new FormsAuthWrapper())
+        public AccountController() : this(new FormsAuthWrapper(), new Mailer())
         {
         }
 
-        public AccountController(IFormsAuth formsAuth)
+        public AccountController(IFormsAuth formsAuth, IMailer mailer)
         {
             this.users = new Users();
             this.pwdResetTokens = new PasswordResetTokens();
             this.formsAuth = formsAuth;
+            this.mailer = mailer;
         }
 
         public ActionResult Login()
@@ -219,7 +221,7 @@ namespace NietoYostenMvc.Controllers
             message.SubjectEncoding = Encoding.GetEncoding("ISO-8859-1");
             message.BodyEncoding = Encoding.GetEncoding("ISO-8859-1");
 
-            NyUtil.SendMail(message);
+            this.mailer.SendMail(message);
 
             this.SetAlertMessage("We have sent instructions to your email on how to reset your password.", AlertClass.AlertInfo);
             return RedirectToAction("Index", "Home");
@@ -324,7 +326,7 @@ namespace NietoYostenMvc.Controllers
                                          "to approve or reject this user.\n\n" +
                                          "The reason given by the user is:\n{1}", userEmail, reason);
 
-            NyUtil.SendMail(message);
+            this.mailer.SendMail(message);
         }
 
         [RequireRole(Role = "admin")]
