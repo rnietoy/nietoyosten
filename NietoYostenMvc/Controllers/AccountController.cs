@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Dynamic;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web.Helpers;
 using System.Web.Mvc;
-using System.Web.Security;
 using CodeBits;
 using Elmah;
-using Facebook;
 using Massive;
 using NietoYostenMvc.Code;
 using NietoYostenMvc.Code.FormsAuth;
@@ -24,17 +21,19 @@ namespace NietoYostenMvc.Controllers
         private readonly PasswordResetTokens pwdResetTokens;
         private readonly IFormsAuth formsAuth;
         private readonly IMailer mailer;
+        private readonly IFacebookApi facebookApi;
 
-        public AccountController() : this(new FormsAuthWrapper(), new Mailer())
+        public AccountController() : this(new FormsAuthWrapper(), new Mailer(), new FacebookApi())
         {
         }
 
-        public AccountController(IFormsAuth formsAuth, IMailer mailer)
+        public AccountController(IFormsAuth formsAuth, IMailer mailer, IFacebookApi facebookApi)
         {
             this.users = new Users();
             this.pwdResetTokens = new PasswordResetTokens();
             this.formsAuth = formsAuth;
             this.mailer = mailer;
+            this.facebookApi = facebookApi;
         }
 
         public ActionResult Login()
@@ -141,11 +140,11 @@ namespace NietoYostenMvc.Controllers
                     {
                         Success = false,
                         RedirectUrl = "/Account/Login",
-                        Message = "Este usuario no ha sido aprovado aún."
+                        Message = "This user account has not been approved yet."
                     });
             }
 
-            string email = FacebookUtil.GetUserEmail(accessToken);
+            string email = this.facebookApi.GetUserEmail(accessToken);
 
             // Merge with existing user if necessary
             if (email == null)
@@ -154,7 +153,8 @@ namespace NietoYostenMvc.Controllers
                 {
                     Success = false,
                     RedirectUrl = "/Account/Login",
-                    Message = "User is not logged into nietoyosten website app."
+                    Message = "User email could not be retreived from facebook account. Check that your facebook account is connected to the NietoYosten website Facebook app " +
+                              "and that you've granted email access permission to the app."
                 });
             }
 

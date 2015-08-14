@@ -2,7 +2,6 @@
 using System.Configuration;
 using System.Security.Cryptography;
 using System.Text;
-using Facebook;
 using Newtonsoft.Json.Linq;
 
 namespace NietoYostenMvc.Code
@@ -14,15 +13,9 @@ namespace NietoYostenMvc.Code
         public string UserName;
     }
 
-    public class FacebookUtil
+    public static class FacebookUtil
     {
         private static readonly string appSecret = ConfigurationManager.AppSettings["FacebookAppSecret"];
-
-        /// <summary>
-        /// Test hook property. For unit tests to inject a test user email to be returned by the GetUserEmail
-        /// method instead of calling the real facebook api.
-        /// </summary>
-        public static string TestUserEmail { get; set; }
 
         static byte[] Base64UrlDecode(string s)
         {
@@ -85,18 +78,6 @@ namespace NietoYostenMvc.Code
         {
             var o = FacebookUtil.DecodeSignedRequest(signedRequest);
             return long.Parse(o.SelectToken("user_id").ToString().Replace("\"", ""));
-        }
-
-        public static string GetUserEmail(string accessToken)
-        {
-            if (FacebookUtil.TestUserEmail == null)
-            {
-                FacebookClient fbClient = new FacebookClient(accessToken);
-                dynamic user = fbClient.Get("me");
-                return user.email;
-            }
-
-            return FacebookUtil.TestUserEmail;
         }
 
         public static FacebookRegistrationInfo GetRegistrationInfo(string signedRequest)

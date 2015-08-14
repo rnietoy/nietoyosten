@@ -21,16 +21,20 @@ namespace NietoYostenMvc.Tests.Mocks
     {
         private IFormsAuth formsAuth;
         private IMailer mailer = MockRepository.GenerateMock<IMailer>();
+        private IFacebookApi facebookApi;
         private RequestContext requestContext = new RequestContext(new MockHttpContext(), new RouteData());
 
         public AccountControllerBuilder()
         {
             this.formsAuth = MockRepository.GenerateMock<IFormsAuth>();
+
+            this.facebookApi = MockRepository.GenerateStub<IFacebookApi>();
+            this.facebookApi.Stub(x => x.GetUserEmail(Arg<string>.Is.Anything)).Return("fbuser@nietoyosten.com");
         }
 
         public AccountController Build()
         {
-            var accountController = new AccountController(formsAuth, mailer);
+            var accountController = new AccountController(this.formsAuth, this.mailer, this.facebookApi);
             accountController.ControllerContext = new ControllerContext
             {
                 Controller = accountController,
@@ -49,6 +53,12 @@ namespace NietoYostenMvc.Tests.Mocks
         public AccountControllerBuilder WithMailer(IMailer mailer)
         {
             this.mailer = mailer;
+            return this;
+        }
+
+        public AccountControllerBuilder WithFacebookApi(IFacebookApi facebookApi)
+        {
+            this.facebookApi = facebookApi;
             return this;
         }
 

@@ -71,9 +71,13 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Mocks\MockHttpContext.cs" />
+    <Compile Include="Specs\FacebookLogin\UnapprovedUserLogsIn.cs" />
+    <Compile Include="Specs\FacebookLogin\UserIsNotConnectedToFacebookApp.cs" />
+    <Compile Include="Specs\FacebookLogin\UserWithFacebookIdLogsIn.cs" />
+    <Compile Include="Specs\FacebookLogin\UserWithNoFacebookIdLogsIn.cs" />
     <Compile Include="Tests\AlbumsModelTests.cs" />
-    <Compile Include="Specs\FacebookLoginSpecs.cs" />
-    <Compile Include="Mocks\MockFactory.cs" />
+    <Compile Include="Specs\FacebookLogin\NonExistentUserLogsIn.cs" />
+    <Compile Include="Mocks\AccountControllerBuilder.cs" />
     <Compile Include="NyUtilTests.cs" />
     <Compile Include="Tests\PicturesModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

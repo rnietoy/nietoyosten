@@ -160,9 +160,11 @@
   <ItemGroup>
     <Compile Include="CodeBits\PasswordGenerator.cs" />
     <Compile Include="Code\ActionFilters.cs" />
+    <Compile Include="Code\FacebookApi.cs" />
     <Compile Include="Code\FacebookUtil.cs" />
     <Compile Include="Code\FormsAuth\FormsAuthWrapper.cs" />
     <Compile Include="Code\FormsAuth\IFormsAuth.cs" />
+    <Compile Include="Code\IFacebookApi.cs" />
     <Compile Include="Code\ImageStorage.cs" />
     <Compile Include="Code\ControllerUtil.cs" />
     <Compile Include="Code\HandleUserFriendlyErrorAttribute.cs" />
