@@ -1,13 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NietoYostenWebApp", "NietoYostenWebApp\NietoYostenWebApp.csproj", "{BC69D701-FF0E-406C-BDF5-A0C3FE43D9A7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImportNietoData", "ImportNietoData\ImportNietoData.csproj", "{792BEFB7-07F6-4637-A593-2B08F477DE18}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateLuceneIndex", "CreateLuceneIndex\CreateLuceneIndex.csproj", "{59EFBD01-7628-4A9A-ABD9-A5FA24D75A39}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NietoYostenMvc", "NietoYostenMvc\NietoYostenMvc.csproj", "{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}"
 EndProject
@@ -33,24 +29,6 @@ Global
 		{BC69D701-FF0E-406C-BDF5-A0C3FE43D9A7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{BC69D701-FF0E-406C-BDF5-A0C3FE43D9A7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{BC69D701-FF0E-406C-BDF5-A0C3FE43D9A7}.Release|x86.ActiveCfg = Release|Any CPU
-		{792BEFB7-07F6-4637-A593-2B08F477DE18}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{792BEFB7-07F6-4637-A593-2B08F477DE18}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{792BEFB7-07F6-4637-A593-2B08F477DE18}.Debug|x86.ActiveCfg = Debug|x86
-		{792BEFB7-07F6-4637-A593-2B08F477DE18}.Debug|x86.Build.0 = Debug|x86
-		{792BEFB7-07F6-4637-A593-2B08F477DE18}.Release|Any CPU.ActiveCfg = Release|x86
-		{792BEFB7-07F6-4637-A593-2B08F477DE18}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{792BEFB7-07F6-4637-A593-2B08F477DE18}.Release|Mixed Platforms.Build.0 = Release|x86
-		{792BEFB7-07F6-4637-A593-2B08F477DE18}.Release|x86.ActiveCfg = Release|x86
-		{792BEFB7-07F6-4637-A593-2B08F477DE18}.Release|x86.Build.0 = Release|x86
-		{59EFBD01-7628-4A9A-ABD9-A5FA24D75A39}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{59EFBD01-7628-4A9A-ABD9-A5FA24D75A39}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{59EFBD01-7628-4A9A-ABD9-A5FA24D75A39}.Debug|x86.ActiveCfg = Debug|x86
-		{59EFBD01-7628-4A9A-ABD9-A5FA24D75A39}.Debug|x86.Build.0 = Debug|x86
-		{59EFBD01-7628-4A9A-ABD9-A5FA24D75A39}.Release|Any CPU.ActiveCfg = Release|x86
-		{59EFBD01-7628-4A9A-ABD9-A5FA24D75A39}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{59EFBD01-7628-4A9A-ABD9-A5FA24D75A39}.Release|Mixed Platforms.Build.0 = Release|x86
-		{59EFBD01-7628-4A9A-ABD9-A5FA24D75A39}.Release|x86.ActiveCfg = Release|x86
-		{59EFBD01-7628-4A9A-ABD9-A5FA24D75A39}.Release|x86.Build.0 = Release|x86
 		{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28FBC047-3128-47C4-A8AD-B2D22E5D41D3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
