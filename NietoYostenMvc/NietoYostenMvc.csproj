@@ -296,9 +296,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>5640</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:5640</IISUrl>
+          <IISUrl>http://local.nietoyosten.com:5640</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://localhost:5640</IISAppRootUrl>
+          <IISAppRootUrl>http://local.nietoyosten.com:5640</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

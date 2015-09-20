@@ -32,7 +32,7 @@ namespace NietoYostenMvc.Tests.Specs.FacebookLogin
             this.facebookApi.Stub(x => x.GetUserEmail(Arg<string>.Is.Anything)).Return(UserEmail);
 
             this.accountController =
-                new AccountControllerBuilder().WithJsonResult().WithFormsAuth(this.formsAuth).WithMailer(this.mailer).WithFacebookApi(this.facebookApi).Build();
+                new AccountControllerBuilder().WithJsonRequest().WithFormsAuth(this.formsAuth).WithMailer(this.mailer).WithFacebookApi(this.facebookApi).Build();
 
             this.result = accountController.FbLogin(
                 ConfigurationManager.AppSettings["SignedRequest"],

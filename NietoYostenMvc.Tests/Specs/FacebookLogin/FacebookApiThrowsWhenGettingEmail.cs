@@ -1,5 +1,9 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Text;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Web.Mvc;
+using Facebook;
 using NietoYostenMvc.Code;
 using NietoYostenMvc.Code.FormsAuth;
 using NietoYostenMvc.Controllers;
@@ -10,62 +14,56 @@ using Xunit;
 
 namespace NietoYostenMvc.Tests.Specs.FacebookLogin
 {
-    public class UserWithNoFacebookIdLogsIn
+    /// <summary>
+    /// Facebok API throws exception when trying to access the user's email address
+    /// This could be due to an invalid/expired/tampered token, etc.
+    /// </summary>
+    public class FacebookApiThrowsWhenGettingEmail
     {
-        private readonly Users usersModel = new Users();
+        private Users usersModel = new Users();
         private readonly IFormsAuth formsAuth;
         private readonly IFacebookApi facebookApi;
-        private readonly AccountController accountController;
+        private readonly IMailer mailer;
+        private AccountController accountController;
         private readonly JsonResult result;
+        private const string UserEmail = "unknown@nietoyosten.com";
 
-        public UserWithNoFacebookIdLogsIn()
+        public FacebookApiThrowsWhenGettingEmail()
         {
             // Init database (this will delete all users, so there are no users with facebook ids in there).
             TestUtil.InitDatabase();
 
+            this.usersModel = new Users();
             this.usersModel.Register("fbuser@nietoyosten.com", TestUtil.DefaultUserPassword, TestUtil.DefaultUserPassword);
             dynamic user = this.usersModel.Single(where: "Email = @0", args: "fbuser@nietoyosten.com");
             user.IsApproved = true;
-            usersModel.Update(user, user.ID);
+            this.usersModel.Update(user, user.ID);
 
             this.facebookApi = MockRepository.GenerateStub<IFacebookApi>();
-            this.facebookApi.Stub(x => x.GetUserEmail(Arg<string>.Is.Anything)).Return("fbuser@nietoyosten.com");
+            this.facebookApi.Stub(x => x.GetUserEmail(Arg<string>.Is.Anything)).Return(null);
 
             this.formsAuth = MockRepository.GenerateMock<IFormsAuth>();
-            this.formsAuth.Expect(x => x.SetAuthCookie("fbuser@nietoyosten.com", false));
 
             this.accountController =
-                new AccountControllerBuilder().WithJsonRequest().WithFormsAuth(this.formsAuth).WithFacebookApi(this.facebookApi).Build();
+                new AccountControllerBuilder().WithJsonRequest().WithFormsAuth(this.formsAuth).WithMailer(this.mailer).WithFacebookApi(this.facebookApi).Build();
 
-            this.result = accountController.FbLogin(
+            this.result = this.accountController.FbLogin(
                 ConfigurationManager.AppSettings["SignedRequest"],
                 ConfigurationManager.AppSettings["AccessToken"],
                 "/Login") as JsonResult;
         }
 
         [Fact]
-        public void UserIsMerged()
+        public void UserIsNotMerged()
         {
             dynamic user = this.usersModel.Single(where: "Email = @0", args: "fbuser@nietoyosten.com");
-            Assert.Equal(long.Parse(ConfigurationManager.AppSettings["FacebookTestUserId"]), user.FacebookUserID);
+            Assert.Null(user.FacebookUserID);
         }
 
         [Fact]
-        public void UserIsLoggedIn()
+        public void UserIsNotLoggedIn()
         {
-            Assert.NotNull(this.result);
-
-            NyResult data = this.result.Data as NyResult;
-            Assert.NotNull(data);
-            Assert.Equal(true, data.Success);
-            this.formsAuth.VerifyAllExpectations();
-        }
-
-        [Fact]
-        public void UserIsRedirectedToHomepage()
-        {
-            NyResult data = this.result.Data as NyResult;
-            Assert.Equal("/", data.RedirectUrl);
+            this.formsAuth.AssertWasNotCalled(x => x.SetAuthCookie("fbuser@nietoyosten.com", false));
         }
     }
 }

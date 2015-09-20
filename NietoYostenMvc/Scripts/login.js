@@ -78,7 +78,7 @@ window.fbAsyncInit = function () {
 
 function getReturnUrl() {
     var returnUrl = $('#return-url').val();
-    if (returnUrl == "") {
+    if (returnUrl === "") {
         returnUrl = "/";
     }
     return returnUrl;

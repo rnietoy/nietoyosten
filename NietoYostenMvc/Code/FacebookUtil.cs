@@ -38,12 +38,16 @@ namespace NietoYostenMvc.Code
         /// <summary>
         /// Checks that the signed request is valid
         /// </summary>
-        /// <param name="signature"></param>
-        /// <param name="payload"></param>
+        /// <param name="signed_request">Signed request parameter returned from facebook.</param>
         /// <returns></returns>
         public static bool ValidateSignedRequest(string signed_request)
         {
             var split = signed_request.Split('.');
+            if (split.Length != 2)
+            {
+                return false;
+            }
+
             string signature = split[0];
             string payload = split[1];
 

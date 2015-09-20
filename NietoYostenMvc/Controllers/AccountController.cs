@@ -87,20 +87,20 @@ namespace NietoYostenMvc.Controllers
             }
             
             this.LoginUser(user);
-            return LoginAndRedirectToReturnUrl();
+            return this.LoginAndRedirectToReturnUrl();
         }
 
         [HttpPost]
         public ActionResult FbLogin(string signedRequest, string accessToken, string returnUrl)
         {
-            if (!Request.IsAjaxRequest())
+            if (!this.Request.IsAjaxRequest())
             {
-                return HttpNotFound();
+                return this.HttpNotFound();
             }
 
             if (string.IsNullOrWhiteSpace(signedRequest))
             {
-                return Json(
+                return this.Json(
                     new NyResult
                     {
                         Success = false,
@@ -111,7 +111,7 @@ namespace NietoYostenMvc.Controllers
 
             if (!FacebookUtil.ValidateSignedRequest(signedRequest))
             {
-                return Json(
+                return this.Json(
                     new NyResult
                     {
                         Success = false,
@@ -136,7 +136,7 @@ namespace NietoYostenMvc.Controllers
                         });
                 }
 
-                return Json(new NyResult
+                return this.Json(new NyResult
                     {
                         Success = false,
                         RedirectUrl = "/Account/Login",
@@ -149,7 +149,7 @@ namespace NietoYostenMvc.Controllers
             // Merge with existing user if necessary
             if (email == null)
             {
-                return Json(new NyResult
+                return this.Json(new NyResult
                 {
                     Success = false,
                     RedirectUrl = "/Account/Login",
@@ -163,7 +163,7 @@ namespace NietoYostenMvc.Controllers
             {
                 this.users.Update(new { FacebookUserID = fbUserId }, mergeUser.ID);
                 this.LoginUser(mergeUser);
-                return Json(new NyResult
+                return this.Json(new NyResult
                 {
                     Success = true,
                     RedirectUrl = "/",

@@ -1,4 +1,5 @@
-﻿using Facebook;
+﻿using System;
+using Facebook;
 
 namespace NietoYostenMvc.Code
 {
@@ -6,8 +7,16 @@ namespace NietoYostenMvc.Code
     {
         public string GetUserEmail(string accessToken)
         {
-            FacebookClient fbClient = new FacebookClient(accessToken);
-            dynamic user = fbClient.Get("me");
+            dynamic user;
+            try
+            {
+                FacebookClient fbClient = new FacebookClient(accessToken);
+                user = fbClient.Get("me");
+            }
+            catch (FacebookApiException)
+            {
+                return null;
+            }
             return user.email;
         }
     }

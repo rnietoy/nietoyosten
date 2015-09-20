@@ -30,7 +30,7 @@ namespace NietoYostenMvc.Tests.Specs.FacebookLogin
             this.facebookApi.Stub(x => x.GetUserEmail(Arg<string>.Is.Anything)).Return("fbuser@nietoyosten.com");
 
             this.accountController =
-                new AccountControllerBuilder().WithJsonResult().WithFormsAuth(this.formsAuth).Build();
+                new AccountControllerBuilder().WithJsonRequest().WithFormsAuth(this.formsAuth).Build();
 
             this.result = accountController.FbLogin(
                 ConfigurationManager.AppSettings["SignedRequest"],
@@ -54,7 +54,7 @@ namespace NietoYostenMvc.Tests.Specs.FacebookLogin
         {
             var usersModel = new Users();
             usersModel.Register("fbuser@nietoyosten.com", TestUtil.DefaultUserPassword, TestUtil.DefaultUserPassword);
-            usersModel.SetFacebookUserId("fbuser@nietoyosten.com", 1446565532337099);
+            usersModel.SetFacebookUserId("fbuser@nietoyosten.com", long.Parse(ConfigurationManager.AppSettings["FacebookTestUserId"]));
 
             dynamic user = usersModel.Single(where: "Email = @0", args: "fbuser@nietoyosten.com");
             user.IsApproved = true;

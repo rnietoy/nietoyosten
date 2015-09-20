@@ -62,11 +62,10 @@ namespace NietoYostenMvc.Tests.Mocks
             return this;
         }
 
-        public AccountControllerBuilder WithJsonResult()
+        public AccountControllerBuilder WithJsonRequest()
         {
             var mockHttpRequest = new MockHttpRequest();
-            mockHttpRequest.Items = new Dictionary<string, string> {{"X-Requested-With", "XMLHttpRequest"}};
-
+            mockHttpRequest.Items["X-Requested-With"] = "XMLHttpRequest";
             this.requestContext = new RequestContext(new MockHttpContext(mockHttpRequest), new RouteData());
             return this;
         }
