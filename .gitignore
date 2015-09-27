@@ -13,10 +13,10 @@ NietoYostenWebApp/images/stories/
 NietoYostenWebApp/LuceneIndex/
 NietoYostenWebApp/NietoYostenWebApp.Publish.xml
 elmahlog/
+.vs/
 *.suo
 *.sln.cache
 _Resharper.*/
-AssemblyInfo.cs
 *.user
 NietoYostenMvc/Content/pictures/
 ckeditor/
