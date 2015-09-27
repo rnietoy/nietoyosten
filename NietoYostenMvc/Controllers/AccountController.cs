@@ -332,7 +332,7 @@ namespace NietoYostenMvc.Controllers
         [RequireRole(Role = "admin")]
         public ActionResult ApprovalRequests()
         {
-            IEnumerable<dynamic> requests = this.users.Query("SELECT U.ID, U.Email, AR.Reason FROM this.users U " +
+            IEnumerable<dynamic> requests = this.users.Query("SELECT U.ID, U.Email, AR.Reason FROM Users U " +
                          "INNER JOIN ApprovalRequests AR ON U.ID = AR.UserID");
 
             return View(requests);
