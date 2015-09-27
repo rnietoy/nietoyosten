@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Massive;
 using NietoYostenMvc.Code;
 using NietoYostenMvc.Models;
 using Xunit;
@@ -116,7 +117,7 @@ namespace NietoYostenMvc.Tests
         public void Test_Get_FirstPicture_In_Album()
         {
             this.InsertTestPictures(25);
-            dynamic picture = this.picturesModel.GetByFileName(testAlbumId, "picture1.jpg");
+            dynamic picture = this.picturesModel.GetByFileName(this.testAlbumId, "picture1.jpg");
             int pictureId = picture.ID;
             
             Assert.Equal("picture1.jpg", picture.FileName);
@@ -130,7 +131,7 @@ namespace NietoYostenMvc.Tests
         public void Test_Get_LastPicture_In_Album()
         {
             this.InsertTestPictures(25);
-            dynamic picture = this.picturesModel.GetByFileName(testAlbumId, "picture25.jpg");
+            dynamic picture = this.picturesModel.GetByFileName(this.testAlbumId, "picture25.jpg");
             int pictureId = picture.ID;
 
             Assert.Equal(pictureId, picture.ID);
@@ -145,10 +146,10 @@ namespace NietoYostenMvc.Tests
         public void Test_Delete_Picture()
         {
             string filename = TestUtil.FormatUnique("picture{0:D3}");
-            picturesModel.Add(testAlbumName, filename, TestUtil.TestUserId);
+            this.picturesModel.Add(testAlbumName, filename, TestUtil.TestUserId);
 
-            dynamic picture = picturesModel.GetByFileName(this.testAlbumId, filename);
-            picturesModel.Delete(picture.ID);
+            dynamic picture = this.picturesModel.GetByFileName(this.testAlbumId, filename);
+            this.picturesModel.Delete(picture.ID);
 
             Assert.Null(picturesModel.Get(picture.ID));
         }
@@ -158,10 +159,22 @@ namespace NietoYostenMvc.Tests
         /// </summary>
         private void InsertTestPictures(int count)
         {
+            var dynamicModel = new DynamicModel("NietoYostenDb", "Pictures", "ID");
+            DateTime startTime = DateTime.Now;
+
             for (int i = 1; i <= count; i++)
             {
-                string picName = string.Format("picture{0:D}.jpg", i);
-                picturesModel.Add(testAlbumName, picName, TestUtil.TestUserId);
+                int albumId = (int)dynamicModel.Scalar(
+                    "SELECT ID FROM Albums WHERE Title = @0", testAlbumName);
+
+                dynamicModel.Insert(new
+                {
+                    AlbumID = albumId,
+                    Title = $"picture{i:D}.jpg",
+                    FileName = $"picture{i:D}.jpg",
+                    UploadedBy = TestUtil.TestUserId,
+                    UploadedAt = startTime.AddSeconds(i)
+                });
             }
         }
     }

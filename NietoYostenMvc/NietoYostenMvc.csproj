@@ -26,6 +26,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>12.0</OldToolsVersion>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -233,6 +234,7 @@
     <None Include="Properties\PublishProfiles\nietoyosten - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\nietoyosten - Web Deploy.pubxml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
+    <None Include="Properties\PublishProfiles\nietoyosten.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

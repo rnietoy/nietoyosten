@@ -461,7 +461,7 @@ namespace NietoYostenMvc.Controllers
                 {
                     var db = new DynamicModel("NietoYostenDb", "ApprovalRequests");
                     db.Insert(new { UserID = result.User.ID, Reason = reason });
-                    SendNewUserRegistrationNotificationToAdmins(email, reason);
+                    this.SendNewUserRegistrationNotificationToAdmins(email, reason);
                 }
                 catch (Exception ex)
                 {
