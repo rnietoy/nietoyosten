@@ -9,6 +9,11 @@ if ($PSBoundParameters['Debug']) {
 
 # Initialization / globals
 [reflection.assembly]::LoadWithPartialName("System.Drawing")
+$ServerInstance = "je7pcvhn7a.database.windows.net"
+$Database = "nietoyosten2"
+$DbUser = $Credential.UserName
+$DbPwd = $Credential.GetNetworkCredential().password
+$UserId = 10
 
 function Init-Azure
 {
@@ -18,12 +23,6 @@ function Init-Azure
     $StorageContext = New-AzureStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey
     $ContainerName = "pictures"
 }
-
-$ServerInstance = "je7pcvhn7a.database.windows.net"
-$Database = "nietoyosten2"
-$DbUser = $Credential.UserName
-$DbPwd = $Credential.GetNetworkCredential().password
-$UserId = 10
 
 function Get-DateTaken([string]$FileName)
 {
@@ -37,7 +36,7 @@ function Get-DateTaken([string]$FileName)
 function Get-FolderDate([string]$FolderName)
 {
     $files = Get-ChildItem -Path $FolderName -Filter "*.jpg"
-    $dates = $files.FullName | % { Get-DateTaken $_ } | sort
+    $dates = $files.LastWriteTime | sort
     return $dates[0]
 }
 
@@ -95,14 +94,6 @@ function Execute-SqlQuery([string]$Query)
     Invoke-Sqlcmd -Query $Query -ServerInstance $ServerInstance -Database $Database -Username $DbUser -Password $DbPwd
 }
 
-function Add-AlbumToDb([string]$LocalFolder)
-{
-    $dateTaken = Get-FolderDate $LocalFolder
-    $title = Format-AlbumTitle $LocalFolder
-    $query = "INSERT INTO Albums (Title,FolderName,CreatedBy,ModifiedBy,CreatedAt,ModifiedAt) VALUES ('$title','$title',$UserId,$UserId,'$dateTaken','$dateTaken')"
-    Execute-SqlQuery $query
-}
-
 function Get-AlbumId([string]$LocalFolder)
 {
     $title = Format-AlbumTitle $LocalFolder
@@ -111,9 +102,26 @@ function Get-AlbumId([string]$LocalFolder)
     $r.ID
 }
 
+function Add-AlbumToDb([string]$LocalFolder)
+{
+    $title = Format-AlbumTitle $LocalFolder
+    
+    $albumId = Get-AlbumId $LocalFolder
+    if ($albumId -ne $null)
+    {
+        Write-Output "Album '$title' already exists in DB. Skipping DB insertion."
+        return
+    }
+
+    $dateTaken = Get-FolderDate $LocalFolder
+    $query = "INSERT INTO Albums (Title,FolderName,CreatedBy,ModifiedBy,CreatedAt,ModifiedAt) VALUES ('$title','$title',$UserId,$UserId,'$dateTaken','$dateTaken')"
+    Execute-SqlQuery $query
+}
+
+
 function Add-PictureToDb([int]$AlbumId, [System.IO.FileInfo]$LocalFile)
 {
-    $dateTaken = Get-DateTaken $LocalFile.FullName
+    $dateTaken = $LocalFile.LastWriteTime
     $fileName = $LocalFile.Name
     $query = "INSERT INTO Pictures (AlbumID,Title,FileName,UploadedAt,UploadedBy) VALUES ($AlbumID,'$fileName','$fileName','$dateTaken',$UserId)"
     Execute-SqlQuery $query
@@ -140,7 +148,7 @@ function Test
 }
 
 Init-Azure
+$albums = Get-AllAlbums "D:\fotki"
+$albums | % { Upload-Album $_ }
 
-#Add-AlbumToDb "D:\fotki\ani-alemania"
-
-Upload-Album "D:\fotki\hyh\bastrop state park"
+#Upload-Album "D:\fotki\hyh\bastrop state park"
