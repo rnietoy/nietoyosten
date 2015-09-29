@@ -24,7 +24,7 @@ namespace NietoYostenMvc.Models
 
         public IEnumerable<dynamic> GetAll()
         {
-            return this.dynamicModel.All(orderBy: "CreatedAt desc");
+            return this.dynamicModel.All(orderBy: "CreatedAt DESC,Title");
         }
 
         public dynamic GetByFolderName(string folderName)

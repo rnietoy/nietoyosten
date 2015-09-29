@@ -72,7 +72,7 @@ namespace NietoYostenMvc.Models
             // Get picture details, including row number (to be used to calculate the album page)
             var query = this.dynamicModel.Query(
                 "SELECT * FROM " +
-                "  (SELECT ROW_NUMBER() OVER (ORDER BY P.ID) AS Row, P.ID, P.Title, P.FileName, A.FolderName " +
+                "  (SELECT ROW_NUMBER() OVER (ORDER BY P.UploadedAt, P.Title) AS Row, P.ID, P.Title, P.FileName, A.FolderName " +
                 "  FROM Pictures P" +
                 "  INNER JOIN Albums A ON A.ID = P.AlbumID" +
                 "  WHERE A.ID = @0" +
@@ -87,8 +87,10 @@ namespace NietoYostenMvc.Models
                 return null;
             }
 
-            picture.PreviousID = this.PreviousPictureId(albumId, pictureId);
-            picture.NextID = this.NextPictureId(albumId, pictureId);
+            int row = (int)picture.Row;
+
+            picture.PreviousID = this.PictureIdAtPosition(albumId, row - 1);
+            picture.NextID = this.PictureIdAtPosition(albumId, row + 1);
             picture.AlbumPage = ((picture.Row - 1)/this.pageSize) + 1;
             picture.FullName = string.Format("{0}/{1}", picture.FolderName, picture.FileName);
 
@@ -104,24 +106,17 @@ namespace NietoYostenMvc.Models
             return this.Get(picture.ID);
         }
 
-        private int? NextPictureId(int albumId, int pictureId)
+        private int? PictureIdAtPosition(int albumId, int position)
         {
             return (int?)this.dynamicModel.Scalar(
-                "SELECT TOP 1 P.ID FROM Pictures P " +
-                "INNER JOIN Albums A ON A.ID = P.AlbumID " +
-                "WHERE A.ID = @0 " +
-                "AND P.ID > @1 ORDER BY P.ID",
-                albumId, pictureId);
-        }
-
-        private int? PreviousPictureId(int albumId, int pictureId)
-        {
-            return (int?)this.dynamicModel.Scalar(
-                "SELECT TOP 1 P.ID FROM Pictures P " +
-                "INNER JOIN Albums A ON A.ID = P.AlbumID " +
-                "WHERE A.ID = @0 " +
-                "AND P.ID < @1 ORDER BY P.ID DESC",
-                albumId, pictureId);
+                "SELECT T.ID FROM " +
+                "  (SELECT ROW_NUMBER() OVER (ORDER BY P.UploadedAt, P.Title) AS Row, P.ID, P.Title, P.FileName, A.FolderName " +
+                "  FROM Pictures P" +
+                "  INNER JOIN Albums A ON A.ID = P.AlbumID" +
+                "  WHERE A.ID = @0" +
+                "  ) T " +
+                "WHERE Row = @1",
+                albumId, position);
         }
 
         public PageResult GetPage(string albumFolderName, int pageNumber)

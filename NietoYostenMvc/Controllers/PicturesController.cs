@@ -41,7 +41,7 @@ namespace NietoYostenMvc.Controllers
             model.TotalPages = pageResult.TotalPages;
             model.CurrentPage = currentPage;
 
-            return View((object)model);
+            return this.View((object)model);
         }
 
         [RequireLogin]
