@@ -1,5 +1,4 @@
 ﻿@{
-    ViewBag.Title = "ShowPicture";
     Layout = "~/Views/Shared/_Layout.cshtml";
     string previousButtonDisabled = @Model.PreviousID == null ? "disabled=\"disabled\"" : "";
     string nextButtonDisabled = @Model.NextID == null ? "disabled=\"disabled\"" : "";
@@ -17,7 +16,11 @@
             <span class="glyphicon glyphicon-arrow-right" style="font-size: 2em"></span>
         </button>
     </p>
-    <p><img src="~/azure/pictures/@Model.FolderName/@Model.FileName?w=800&h=800&mode=max"/></p>
+    <p>
+        <a href="~/pictures/view/@Model.NextID">
+            <img src="~/azure/pictures/@Model.FolderName/@Model.FileName?w=800&h=800&mode=max"/>
+        </a>
+    </p>
     <p>@Model.Title</p>
     <p><a href="~/azure/pictures/@Model.FolderName/@Model.FileName?cache=always">Descargar original</a></p>
 </div>

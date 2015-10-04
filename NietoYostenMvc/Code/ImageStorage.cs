@@ -24,7 +24,7 @@ namespace NietoYostenMvc.Code
             {
                 const string account = "nietoyosten";
                 string key = ConfigurationManager.AppSettings["STORAGE_ACCOUNT_KEY"];
-                string connectionString = String.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", account, key);
+                string connectionString = $"DefaultEndpointsProtocol=https;AccountName={account};AccountKey={key}";
                 return CloudStorageAccount.Parse(connectionString);
             }
         }

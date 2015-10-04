@@ -34,6 +34,7 @@ namespace NietoYostenMvc.Controllers
         {
             int currentPage = this.GetCurrentPage();
             PageResult pageResult = this.picturesModel.GetPage(album, currentPage);
+            dynamic albumRow = this.albumsModel.GetByFolderName(album);
 
             dynamic model = new ExpandoObject();
             model.FolderName = album;   // Album folder name
@@ -41,6 +42,7 @@ namespace NietoYostenMvc.Controllers
             model.TotalPages = pageResult.TotalPages;
             model.CurrentPage = currentPage;
 
+            this.ViewData["Title"] = albumRow.Title;
             return this.View((object)model);
         }
 
@@ -51,10 +53,11 @@ namespace NietoYostenMvc.Controllers
 
             if (picture == null)
             {
-                return HttpNotFound();
+                return this.HttpNotFound();
             }
 
-            return View((object)picture);
+            this.ViewData["Title"] = picture.Title;
+            return this.View((object)picture);
         }
 
         /// <summary>
@@ -65,7 +68,7 @@ namespace NietoYostenMvc.Controllers
         [RequireRole(Role = "family")]
         public ActionResult Upload(string id)
         {
-            return View((object)id);
+            return this.View((object)id);
         }
 
         private class UploadPictureDto

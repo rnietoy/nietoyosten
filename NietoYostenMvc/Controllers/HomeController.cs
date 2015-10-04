@@ -12,16 +12,16 @@ namespace NietoYostenMvc.Controllers
     public class HomeController : ApplicationController
     {
         public const int PageSize = 5;
+        private readonly Articles articles;
 
-        private Articles _articles;
         public HomeController()
         {
-            _articles = new Articles();
+            this.articles = new Articles();
         }
         public ActionResult Index()
         {
-            IEnumerable<dynamic> homePageArticles = _articles.GetHomePageArticles();
-            return View(new ShowArticlesViewModel
+            IEnumerable<dynamic> homePageArticles = this.articles.GetHomePageArticles();
+            return this.View(new ShowArticlesViewModel
             {
                 Articles = homePageArticles,
                 CurrentPage = 1,
@@ -35,7 +35,7 @@ namespace NietoYostenMvc.Controllers
         {
             int page = this.GetCurrentPage();
             int totalPages;
-            IEnumerable<dynamic> result = _articles.GetArticles(section, page, HomeController.PageSize, out totalPages);
+            IEnumerable<dynamic> result = this.articles.GetArticles(section, page, HomeController.PageSize, out totalPages);
 
             ShowArticlesViewModel vm = new ShowArticlesViewModel
             {
@@ -51,7 +51,7 @@ namespace NietoYostenMvc.Controllers
         [RequireLogin]
         public ActionResult ShowArticle(int ID)
         {
-            dynamic article = _articles.GetArticle(ID);
+            dynamic article = this.articles.GetArticle(ID);
             if (null == article)
             {
                 return HttpNotFound();
