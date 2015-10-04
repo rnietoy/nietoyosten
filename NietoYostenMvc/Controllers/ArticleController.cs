@@ -10,11 +10,11 @@ namespace NietoYostenMvc.Controllers
 {
     public class ArticleController : ApplicationController
     {
-        private Articles _articles;
+        private readonly Articles articles;
 
         public ArticleController()
         {
-            _articles = new Articles();
+            this.articles = new Articles();
         }
 
         /// <summary>
@@ -31,16 +31,16 @@ namespace NietoYostenMvc.Controllers
             }
 
             string query = "SELECT ID, Name FROM Sections WHERE ParentSectionID IS NOT NULL OR Name = 'News' OR Name = 'Family' ORDER BY ParentSectionID";
-            IEnumerable<SelectListItem> sections = _articles.Query(query).
+            IEnumerable<SelectListItem> sections = this.articles.Query(query).
                     Select(x => new SelectListItem {Value = x.ID.ToString(), Text = x.Name });
 
             ArticleIndexViewModel vm = new ArticleIndexViewModel
             {
                 SelectedSection = id,
                 SectionOptions = sections,
-                Articles = _articles.GetArticlesBySectionId(id)
+                Articles = this.articles.GetArticlesBySectionId(id)
             };
-            return View("Index", vm);
+            return this.View("Index", vm);
         }
 
         /// <summary>
@@ -49,31 +49,33 @@ namespace NietoYostenMvc.Controllers
         /// <param name="id">Article id</param>
         /// <returns>Edit page for the given article</returns>
         [RequireLogin]
+        [RequireRole(Role = "family")]
         public ActionResult Edit(int id)
         {
-            EditArticleViewModel vm = _articles.GetEditArticleViewModel(id);
+            EditArticleViewModel vm = this.articles.GetEditArticleViewModel(id);
 
             if (null == vm)
             {
-                return HttpNotFound();
+                return this.HttpNotFound();
             }
 
-            return View(vm);
+            return this.View(vm);
         }
 
         [RequireLogin]
+        [RequireRole(Role = "family")]
         [HttpPost]
         public ActionResult Edit(EditArticleViewModel vm)
         {
             try
             {
-                _articles.Update(
+                this.articles.Update(
                     new
                     {
                         vm.Title,
                         IntroText = vm.IntroText ?? string.Empty,
                         Content = vm.Content ?? string.Empty,
-                        ModifiedBy = CurrentUserID,
+                        ModifiedBy = this.CurrentUserID,
                         UpdatedAt = DateTime.Now,
                         vm.IsPublished
                     },
@@ -84,13 +86,14 @@ namespace NietoYostenMvc.Controllers
                 ErrorSignal.FromCurrentContext().Raise(ex);
 
                 this.SetAlertMessage("Ocurrió un error al guardar el artículo.", AlertClass.AlertDanger);
-                return View(vm);
+                return this.View(vm);
             }
 
-            return RedirectToAction("Index", new { id =  vm.SectionID });
+            return this.RedirectToAction("Index", new { id =  vm.SectionID });
         }
 
         [RequireLogin]
+        [RequireRole(Role = "family")]
         public ActionResult Add(string id)
         {
             var vm = new EditArticleViewModel
@@ -104,23 +107,24 @@ namespace NietoYostenMvc.Controllers
                 SectionID = int.Parse(id)
             };
 
-            return View("Edit", vm);
+            return this.View("Edit", vm);
         }
 
         [RequireLogin]
+        [RequireRole(Role = "family")]
         [HttpPost]
         public ActionResult Add(EditArticleViewModel vm)
         {
             try
             {
-                _articles.Insert(
+                this.articles.Insert(
                     new
                     {
                         vm.Title,
                         IntroText = vm.IntroText ?? string.Empty,
                         Content = vm.Content ?? string.Empty,
-                        CreatedBy = CurrentUserID,
-                        ModifiedBy = CurrentUserID,
+                        CreatedBy = this.CurrentUserID,
+                        ModifiedBy = this.CurrentUserID,
                         CreatedAt = DateTime.Now,
                         UpdatedAt = DateTime.Now,
                         vm.SectionID,
@@ -135,10 +139,10 @@ namespace NietoYostenMvc.Controllers
 
                 vm.Action = "Add";
                 vm.PageTitle = "Agregar artículo";
-                return View("Edit", vm);
+                return this.View("Edit", vm);
             }
 
-            return RedirectToAction("Index", new { id = vm.SectionID });
+            return this.RedirectToAction("Index", new { id = vm.SectionID });
         }
     }
 }
