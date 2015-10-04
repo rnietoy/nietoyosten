@@ -47,10 +47,14 @@ namespace NietoYostenMvc.Controllers
         }
 
         [RequireLogin]
-        public ActionResult ShowPicture(int pictureid)
+        public ActionResult ShowPicture(int pictureid = -1)
         {
-            dynamic picture = this.picturesModel.Get(pictureid);
+            if (pictureid == -1)
+            {
+                return this.RedirectToAction("Index");
+            }
 
+            dynamic picture = this.picturesModel.Get(pictureid);
             if (picture == null)
             {
                 return this.HttpNotFound();

@@ -17,9 +17,19 @@
         </button>
     </p>
     <p>
-        <a href="~/pictures/view/@Model.NextID">
+        @* Show image and make it a link to the next picture (if there is a next picture)
+           This should help usability. *@
+        @* ReSharper disable once Html.PathError *@
+        @if (@Model.NextID == null)
+        {
             <img src="~/azure/pictures/@Model.FolderName/@Model.FileName?w=800&h=800&mode=max"/>
-        </a>
+        }
+        else
+        {
+            <a href="~/pictures/view/@Model.NextID">
+                <img src="~/azure/pictures/@Model.FolderName/@Model.FileName?w=800&h=800&mode=max"/>
+            </a>
+        }
     </p>
     <p>@Model.Title</p>
     <p><a href="~/azure/pictures/@Model.FolderName/@Model.FileName?cache=always">Descargar original</a></p>
