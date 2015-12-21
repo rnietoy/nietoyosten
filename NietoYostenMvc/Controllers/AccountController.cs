@@ -322,7 +322,7 @@ namespace NietoYostenMvc.Controllers
 
             message.Subject = string.Format("User approval request for {0}", userEmail);
             message.Body = string.Format("User {0} has requested approval to the nietoyosten.com site. " +
-                                         "Please go to http://nietoyosten.com/Account/ApprovalRequests " +
+                                         "Please go to https://nietoyosten.com/Account/ApprovalRequests " +
                                          "to approve or reject this user.\n\n" +
                                          "The reason given by the user is:\n{1}", userEmail, reason);
 

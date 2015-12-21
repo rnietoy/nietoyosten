@@ -25,4 +25,7 @@ imagecache/
 *.swp
 *.*~
 *.crunchsolution.cache
+
+# Publish Web Output
 *.pubxml
+*.Publish.xml
