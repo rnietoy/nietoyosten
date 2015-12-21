@@ -231,8 +231,6 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Article\Index.cshtml" />
     <Content Include="Views\Article\Edit.cshtml" />
-    <None Include="Properties\PublishProfiles\nietoyosten - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\nietoyosten - Web Deploy.pubxml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <None Include="Properties\PublishProfiles\nietoyosten.pubxml" />
   </ItemGroup>
@@ -272,7 +270,6 @@
     <Content Include="Views\Account\ApprovalRequests.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\PublishProfiles\local.pubxml" />
     <Content Include="Views\Pictures\Index.cshtml" />
     <Content Include="Views\Pictures\ShowAlbum.cshtml" />
     <Content Include="Views\Pictures\ShowPicture.cshtml" />
